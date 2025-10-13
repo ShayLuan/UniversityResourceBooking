@@ -110,7 +110,7 @@ footer {
     color: #ecf39e;
 }
 
-/* ---------------------- Register CSS --------------------------- */
+/* --------------------------- Register CSS --------------------------- */
 
 /* Register Frame (Register)*/
 #register-frame {
@@ -211,7 +211,7 @@ footer {
   color: #90a955;
 }
 
-/* ---------------------- Login CSS --------------------------- */
+/* --------------------------- Login CSS --------------------------- */
 
 /* Register Frame (Login)*/
 #login-frame {
@@ -316,3 +316,6 @@ footer {
 .nav_bar_login nav a:hover , .nav_bar_login nav a:focus {
   color: #90a955;
 }
+
+/* --------------------------- Forgot Password CSS --------------------------- */
+
