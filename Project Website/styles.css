@@ -23,8 +23,7 @@ main {
 
 /* The frame box */
 #frame,
-#register-frame,
-#login-frame {
+#register-frame {
   background-color: #ecf39e;
   width: 90%;
   max-width: 600px;
@@ -33,7 +32,7 @@ main {
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 17px rgb(0, 0, 0, 0.25);
-  padding: 20px;
+  padding: 15px;
 }
 
 /* Nav bar at the top of frame (Home)*/
@@ -225,6 +224,18 @@ footer {
 
 /* --------------------------- Login CSS --------------------------- */
 
+#login-frame {
+  background-color: #ecf39e;
+  width: 60%;
+  max-width: 600px;
+  min-height: 300px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 17px rgb(0, 0, 0, 0.25);
+  padding: 15px;
+}
+
 /* Register Frame (Login)*/
 #login-frame {
   margin: 5% auto;
@@ -356,7 +367,7 @@ footer {
 
 .registerpage::before {
   content: '';
-  position: absolute;
+  position: fixed; /* changed from absolute to fixed*/
   top: 0;
   left: 0;
   right: 0;
@@ -383,3 +394,49 @@ body {
 
 
 /* --------------------------- Forgot Password CSS --------------------------- */
+
+#resetpw-frame {
+  background-color: #ecf39e;
+  width:60%;
+  max-width: 600px;
+  min-height: 200px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 17px rgb(0, 0, 0, 0.25);
+  padding: 15px;
+}
+
+#resetpw-frame {
+    margin: 5% auto;
+  max-width: 600px;
+}
+
+#resetpw-frame h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #132a13;
+  font-size: 1.7rem;
+}
+
+/* Log in as admin (Forgot Password) */
+#resetpw-frame p {
+  text-align: center;
+  margin-top: 1.4rem;
+  font-size: 0.9rem;
+  color: #132a13;
+}
+
+/* Log in (Forgot Password) */
+#resetpw-frame p a {
+
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Send to email  , when hovered on or clicked  (Forgot Password) */
+#resetpw-frame p a:hover,
+#resetpw-frame p a:focus {
+  color: #90a955;
+  text-decoration: underline;
+}
