@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Campus Resouces Booking Forgot Password Page</title>
+    <title>Campus Resouces Booking Login Page</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,18 +17,17 @@
     <link type="text/css" rel="stylesheet" href="styles.css" />
   </head>
 
-  <body class="forgotpw">
+  <body class="loginpage">
     <header class="nav_bar_register">
       <nav>
         <a href="Home.html">Home</a>
         <a href="Resources.html">Resources</a>
       </nav>
     </header>
-
     <main>
-      <section id="resetpw-frame">
-        <h1>Reset Password</h1>
-        <form action="Home.html" method="POST" id="login-form">
+      <section id="login-frame">
+        <h1>Log in as administrator</h1>
+        <form action="Resources.html" method="POST" id="login-form">
           <label for="email"></label>
           <input
             type="email"
@@ -38,11 +37,25 @@
             required
           />
 
-          <button type="submit" class="button">Send to email</button>
+          <label for="password"></label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+
+          <button type="submit" class="button">Log in</button>
         </form>
+
+        <p>
+          <a id="forgot-password" href="mailto:itsupport@campusbooker.edu"
+            >Forgot password? | Contact itsupport@campus.edu</a
+          >
+        </p>
       </section>
     </main>
-
     <footer>
       &copy; 2025 Campus Resource Booking System | Contact:
       <br \ />
