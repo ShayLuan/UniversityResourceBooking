@@ -3,7 +3,7 @@ html {
   height: 100%;
   margin: 0;
   font-family: 'Exo 2', sans-serif;
-  background: url('campus_pic.jpg') no-repeat center center fixed;
+  background: url('sourcePics/campus_pic.jpg') no-repeat center center fixed;
   background-size: cover;
   /* make the image as large as possible to cover the container */
   color: #132a13;
@@ -222,6 +222,7 @@ footer {
   color: #90a955;
 }
 
+
 /* --------------------------- Login CSS --------------------------- */
 
 #login-frame {
@@ -343,6 +344,8 @@ footer {
   color: #90a955;
 }
 
+
+
 /*Background image modifications*/
 .homepage {
   background: url('campus_pic.jpg') no-repeat center center fixed;
@@ -367,7 +370,8 @@ footer {
 
 .registerpage::before {
   content: '';
-  position: fixed; /* changed from absolute to fixed*/
+  position: fixed;
+  /* changed from absolute to fixed*/
   top: 0;
   left: 0;
   right: 0;
@@ -397,7 +401,7 @@ body {
 
 #resetpw-frame {
   background-color: #ecf39e;
-  width:60%;
+  width: 60%;
   max-width: 600px;
   min-height: 200px;
   border-radius: 20px;
@@ -408,7 +412,7 @@ body {
 }
 
 #resetpw-frame {
-    margin: 5% auto;
+  margin: 5% auto;
   max-width: 600px;
 }
 
