@@ -1,7 +1,10 @@
 flatpickr("#date", {
-    minDate: "today",
-    dateFormat: "Y-m-d",
+  minDate: "today",
+  dateFormat: "Y-m-d",
+  showMonths: 2,
+  locale: { firstDayOfWeek: 1 }
 });
+
 
 const times = [
     "8:00 AM", "8:15 AM", "8:30 AM", "8:45 AM",
