@@ -33,3 +33,25 @@ times.forEach(time => {
     };
     grid.appendChild(slot);
 });
+
+// Required fields before confirm
+const form = document.getElementById("bookingForm");
+
+form.addEventListener("submit", (event) => {
+  const missing = [];
+  const date = document.getElementById("date");
+  const time = document.getElementById("time");
+  
+  if (!date.value) {
+    missing.push("Date");
+  }
+
+  if (!time.value) { 
+    missing.push("Time");
+  }
+
+  if (missing.length > 0) {
+    event.preventDefault();
+    alert("You're missing the following required field:\n• " + missing.join("\n• "));
+  }
+});
