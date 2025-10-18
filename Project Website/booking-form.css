@@ -13,6 +13,7 @@ html {
     overflow-x: hidden;
     background: url('sourcePics/campus_pic.jpg') no-repeat center center fixed;
     background-size: cover;
+    padding-bottom: 20px; 
 }
 
 h1 {
