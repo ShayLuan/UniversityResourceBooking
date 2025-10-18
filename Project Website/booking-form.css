@@ -1,0 +1,134 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Exo 2', sans-serif;
+    color: #132a13;
+    overflow-x: hidden;
+    background: url('sourcePics/campus_pic.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+div {
+    margin-bottom: 16px;
+}
+
+body {
+    padding-top: 70px;
+}
+
+.nav_bar_bookingform nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ecf39e;
+    border-bottom: 1px solid #cdcccf;
+
+    /*might need changing*/
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.nav-left,
+.nav-right {
+    display: flex;
+    gap: 20px;
+}
+
+.nav_bar_bookingform nav a {
+    text-decoration: none;
+    color: #132a13;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.nav_bar_bookingform nav a:hover {
+    color: #90a955;
+}
+
+/* time slot styles */
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+    justify-items: center;
+}
+
+.time-slot {
+    padding: 10px 0;
+    min-width: 85px;
+    background: #e9f5db;
+    border: 1px solid #a7c957;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 0;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    text-align: center;
+}
+
+.time-slot:hover {
+    background: #d9eab9;
+    border-color: #8ca15a;
+}
+
+.time-slot.selected {
+    background: #b5cf7d;
+    color: #203206;
+    border: 2px solid #7d9d37;
+    font-weight: 700;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto 80px auto;
+    padding: 32px 32px 48px 32px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+    overflow: visible !important;
+}
+
+/* copied footer CSS */
+.footer-bar {
+    background: #a7c957;
+    padding: 1.2em 2em;
+    font-family: inherit;
+    font-size: 1em;
+    color: #222;
+    border-top: 1px solid #222;
+    text-align: center;
+}
+
+.footer-bar a {
+    color: #386641;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
