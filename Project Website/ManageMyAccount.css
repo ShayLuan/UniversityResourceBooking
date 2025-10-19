@@ -1,0 +1,88 @@
+body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Exo 2', sans-serif;
+    color: #132a13;
+    overflow-x: hidden;
+    background: url('sourcePics/PACCAR-Hall-Foster-School-of-Business-University-of-Washington_1692_cloud.webp') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.nav_bar {
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ecf39e;
+    border-bottom: 1px solid #cdcccf;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.nav_bar a {
+    text-decoration: none;
+    color: #132a13;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.nav_bar a:hover {
+    color: #90a955;
+}
+
+.container {
+    color: #31572c;
+    width: 400px;
+    height: fit-content;
+    background-color: #ecf39e;
+    border-radius: 12px;
+    padding: 10px 20px;
+    text-align: center;
+    margin: 100px auto;
+}
+
+/* Button */
+.button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 15px;
+  
+}
+
+.button {
+    background-color: #4f772d;
+    color: white;
+    padding: 12px 28px;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover,
+.button:focus {
+    background-color: #90a955;
+}
+
+.footer-bar {
+    background: #a7c957;
+    padding: 1.2em 2em;
+    font-family: inherit;
+    font-size: 1em;
+    color: #222;
+    border-top: 1px solid #222;
+    text-align: center;
+}
+
+.footer-bar a {
+    color: #386641;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+}

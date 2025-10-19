@@ -2,7 +2,7 @@ body {
   margin: 0;
   font-family: sans-serif;
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   background: url('sourcePics/campus_pic.jpg') no-repeat center center fixed;
   background-size: cover;
 }
@@ -56,6 +56,8 @@ h1 {
 }
 
 .card {
+  max-width: 250px;
+  height: 120px;
   background: #ecf39e;
   border-radius: 16px;
   padding: 32px;
