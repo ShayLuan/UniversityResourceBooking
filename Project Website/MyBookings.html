@@ -32,8 +32,8 @@
               <span>Tuesday, Oct 28, 2025 • 10:00–12:00</span>
             </div>
             <div class="actions">
-              <a href="booking-form.html" class="button">Modify</a>
-              <button class="button outline" type="button">Cancel</button>
+              <button id="modify-1" class="button-outline" type="button" onclick="modifyBooking('modify-1')">Modify</button>
+              <button id="booking-1"class="button outline" type="button" onclick="cancelBooking('booking-1')">Cancel</button>
             </div>
           </li>
 
@@ -43,8 +43,8 @@
               <span>Sunday, Nov 2, 2025 • 13:00–15:00</span>
             </div>
             <div class="actions">
-              <a href="booking-form.html" class="button">Modify</a>
-              <button class="button outline" type="button">Cancel</button>
+              <button id="modify-2" class="button-outline" type="button" onclick="modifyBooking('modify-2')">Modify</button>
+              <button id="booking-2" class="button outline" type="button" onclick="cancelBooking('booking-2')">Cancel</button>
             </div>
           </li>
         </ul>
@@ -55,6 +55,7 @@
       &copy; 2025 Campus Resource Booking System | Contact:
       <br />
       <a id="footer-link" href="mailto:support@campusbooker.edu">support@campusbooker.edu</a>
+      <script type="text/javascript" src="mybooking-script.js"></script>
     </footer>
   </body>
 </html>
