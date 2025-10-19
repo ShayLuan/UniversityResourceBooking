@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  display: flex;
+  height: 100vh;
+  background-color: #a13;
+}
+.sidebar {
+  width: 240px;
+  background: #90a955;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0 0 0;
+  box-shadow: 2px 0 16px rgba(50, 80, 50, 0.1);
+}
+
+
+.main {
+  flex-grow: 1;
+  padding: 46px 60px;
+}
+h1 {
+  font-size: 2.3rem;
+  color: #132a13;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.card-link {
+  display: block;         /* Make the anchor a block element */
+  color: inherit;         /* Inherit text color from card */
+  text-decoration: none;  /* Remove underline */
+  position: relative;     /* For potential child positioning */
+  border-radius: 16px;    /* Match card’s rounded corners */
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.card-link:hover, 
+.card-link:focus {
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(90,130,90,0.18); /* Hover shadow */
+  transform: translateY(-4px) scale(1.03);      /* Subtle lift on hover */
+  text-decoration: none;
+}
+
+/* Optional - add focus outline for accessibility */
+.card-link:focus-visible {
+  outline: 3px solid #90a955;
+  outline-offset: 4px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(90,130,90,0.10);
+  padding: 32px;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.card:hover {
+  box-shadow: 0 8px 32px rgba(90,130,90,0.18);
+  transform: translateY(-4px) scale(1.03);
+}
+.card h2 {
+  font-size: 1.3rem;
+  color: #90a955;
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+.card p {
+  font-size: 1.05rem;
+  color: #374151;
+}
+
+@media (max-width: 600px) {
+  .main { padding: 24px 8px; }
+  .sidebar { width: 100px; padding: 8px 0; }
+  .sidebar button { font-size: 0.99rem; padding: 12px 12px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+.sidebar {
+  width: 240px;
+  background: #90a955;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0 0 0;
+  box-shadow: 2px 0 16px rgba(50, 80, 50, 0.1);
+}
+
+.sidebar-link {
+  color: white;
+  text-decoration: none;
+  padding: 22px 32px;
+  font-size: 1.12rem;
+  font-weight: 600;
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.sidebar-link:hover, .sidebar-link:focus {
+  background: #b5dd9c;
+  color: #132a13;
+  box-shadow: 0 2px 8px rgba(50,100,50,0.07) inset;
+}
