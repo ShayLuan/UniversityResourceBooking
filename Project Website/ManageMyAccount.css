@@ -31,40 +31,68 @@ body {
     color: #90a955;
 }
 
-.container {
-    color: #31572c;
-    width: 400px;
-    height: fit-content;
-    background-color: #ecf39e;
-    border-radius: 12px;
-    padding: 10px 20px;
-    text-align: center;
-    margin: 100px auto;
+.card {
+  max-width: 500px;
+  margin: 170px auto;
+  background: #ecf39e;
+  border-radius: 16px;
+  padding: 28px;
+  color: #132a13;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
 }
 
-/* Button */
-.button-group {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 2rem;
-    padding-top: 15px;
-  
+.card h1 {
+  text-align: center;
+  margin-bottom: 22px;
+  color: #31572c;
+  letter-spacing: 0.5px;
 }
 
-.button {
-    background-color: #4f772d;
-    color: white;
-    padding: 12px 28px;
-    text-decoration: none;
-    font-weight: 600;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+.field {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(49,87,44,.15);
 }
 
-.button:hover,
-.button:focus {
-    background-color: #90a955;
+.field:last-child {
+    border-bottom: none;
+}
+
+.field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field-head h2 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: #31572c;
+}
+
+.edit-btn {
+  padding: 0.35rem 0.7rem;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #31572c;
+  color: #ecf39e;
+  font-weight: 600;
+}
+
+.edit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+.value {
+    margin: 0.5rem 0 0 0;
+    font-size: 1.05rem;
+}
+
+.value.muted {
+    opacity: 0.7;
+    font-style: italic;
 }
 
 .footer-bar {
@@ -85,4 +113,8 @@ body {
 
 footer {
     text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
 }

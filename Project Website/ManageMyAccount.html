@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Manage My Account</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,28 +20,55 @@
     <header class="nav_bar">
       <nav>
         <div class="nav_top">
-          <a href="StudentDashboard.html">Student Dashboard</a>
+          <a href="StudentDashboard.html">Dashboard</a>
         </div>
       </nav>
     </header>
-    <main class="container">
+    <main>
+      <section class="card" id="profile-card">
       <h1>Personal Information</h1>
-      <div class="studentInfoBox">
-        <h2>Full Name</h2>
-        <p>John Doe</p>
-        <h2>Email Address</h2>
-        <p>John.Doe@gmail.com</p>
-        <h2>Password</h2>
-        <p id="password">********** <span>Show Password</span></p>
-        <h2>Cellular Phone</h2>
-        <p>Add number</p>
-        <h2>Home Address</h2>
-        <p>Add home address</p>
-        <div class="button-group">
-          <button type="submit" class="button">Save Changes</button>
-        </div>
-      </div>
+
+  <div class="field">
+    <div class="field-head">
+      <h2>Full Name</h2>
+      <button class="edit-btn" type="button">Modify</button>
+    </div>
+    <p class="value">John Doe</p>
+  </div>
+
+  <div class="field">
+    <div class="field-head">
+      <h2>Email Address</h2>
+      <button class="edit-btn" type="button">Modify</button>
+    </div>
+    <p class="value">John.Doe@gmail.com</p>
+  </div>
+
+  <div class="field">
+    <div class="field-head">
+      <h2>Password</h2>
+      <button class="edit-btn" type="button">Modify</button>
+    </div>
+    <p class="value" data-mask="true">**********</p>
+  </div>
+
+  <div class="field">
+    <div class="field-head">
+      <h2>Cellular Phone</h2>
+      <button class="edit-btn" type="button">Modify</button>
+    </div>
+    <p class="value muted">Add number</p>
+  </div>
+
+  <div class="field">
+    <div class="field-head">
+      <h2>Home Address</h2>
+      <button class="edit-btn" type="button">Modify</button>
+    </div>
+    <p class="value muted">Add home address</p>
+      </section>
     </main>
+
     <footer class="footer-bar">
       &copy; 2025 Campus Resource Booking System | Contact:
       <br \ />
