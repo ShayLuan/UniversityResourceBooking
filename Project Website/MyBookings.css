@@ -19,10 +19,24 @@ main {
 
 .nav_bar_mybookings nav {
   display: flex;
-  gap: 1.2rem;
+  gap: 2rem;
   padding: 1rem 2rem;
   background-color: #ecf39e;
   border-bottom: 1px solid #cdcccf;
+}
+
+/* Match link look with other pages */
+.nav_bar_mybookings nav a {
+  text-decoration: none;
+  color: #132a13;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.nav_bar_mybookings nav a:hover,
+.nav_bar_mybookings nav a:focus {
+  color: #90a955;
 }
 
 #mybookings-frame {
