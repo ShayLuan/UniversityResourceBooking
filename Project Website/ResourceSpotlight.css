@@ -1,0 +1,131 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body { overflow-x: hidden; }
+
+body {
+  font-family: 'Exo 2', sans-serif;
+  min-height: 100vh;
+  background: url('sourcePics/campus_pic.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #132a13;
+}
+
+/* Header (match resources page) */
+.nav_bar_resources nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #ecf39e;
+  border-bottom: 1px solid #cdcccf;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
+}
+
+.nav-left, .nav-right { display: flex; gap: 20px; }
+.nav_bar_resources nav a {
+  text-decoration: none;
+  color: #132a13;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+.nav_bar_resources nav a:hover,
+.nav_bar_resources nav a:focus { color: #90a955; }
+
+/* Page container */
+.container {
+  padding: 32px 24px;
+  margin-top: 72px;
+}
+
+.page-header h1 { font-size: 2.1rem; margin: 0 0 8px 0; }
+.page-header .subtitle {
+  background: #ecf39e;
+  color: #132a13;
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 0 0 20px 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+}
+
+.filter-card, .calendar-card {
+  background: #ecf39e;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 17px rgba(0, 0, 0, 0.08);
+}
+
+.filter-card label { display: block; font-weight: 700; margin-bottom: 8px; }
+.filter-card select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #90a955;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+}
+.filter-card .hint { color: #31572c; margin: 10px 0 14px 0; }
+
+.button {
+  display: inline-block;
+  background: #4f772d;
+  color: #ecf39e;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+.button:hover, .button:focus { background: #90a955; color: #132a13; }
+
+/* Calendar */
+.calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.calendar-header h2 { font-size: 1.25rem; margin: 0; }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.dow { font-weight: 700; text-align: center; color: #31572c; }
+.day {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  min-height: 64px;
+  padding: 8px;
+  text-align: right;
+  color: #132a13;
+}
+.day.today { outline: 2px solid #4f772d; }
+.day.empty { background: transparent; border-color: transparent; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .nav-left, .nav-right { gap: 12px; }
+  .nav_bar_resources nav a { font-size: 1rem; }
+  .container { margin-top: 96px; }
+}
+
+@media (max-width: 420px) {
+  .nav-left, .nav-right { width: 100%; }
+  .nav-right { justify-content: flex-end; }
+  .container { margin-top: 120px; }
+}
