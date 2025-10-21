@@ -19,13 +19,17 @@ main {
 
 .nav_bar_mybookings nav {
   display: flex;
-  gap: 2rem;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem 2rem;
   background-color: #ecf39e;
   border-bottom: 1px solid #cdcccf;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
 }
 
-/* Match link look with other pages */
 .nav_bar_mybookings nav a {
   text-decoration: none;
   color: #132a13;
