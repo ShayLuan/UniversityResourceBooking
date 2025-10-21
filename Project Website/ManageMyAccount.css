@@ -1,34 +1,35 @@
 body {
-    height: 100%;
-    margin: 0;
-    font-family: 'Exo 2', sans-serif;
-    color: #132a13;
-    overflow-x: hidden;
-    background: url('sourcePics/PACCAR-Hall-Foster-School-of-Business-University-of-Washington_1692_cloud.webp') no-repeat center center fixed;
-    background-size: cover;
+  height: 100%;
+  margin: 0;
+  font-family: "Exo 2", sans-serif;
+  color: #132a13;
+  overflow-x: hidden;
+  background: url("sourcePics/PACCAR-Hall-Foster-School-of-Business-University-of-Washington_1692_cloud.webp")
+    no-repeat center center fixed;
+  background-size: cover;
 }
 
 .nav_bar {
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #ecf39e;
-    border-bottom: 1px solid #cdcccf;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #ecf39e;
+  border-bottom: 1px solid #cdcccf;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 
 .nav_bar a {
-    text-decoration: none;
-    color: #132a13;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
+  text-decoration: none;
+  color: #132a13;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
 }
 
 .nav_bar a:hover {
-    color: #90a955;
+  color: #90a955;
 }
 
 .card {
@@ -38,7 +39,7 @@ body {
   border-radius: 16px;
   padding: 28px;
   color: #132a13;
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card h1 {
@@ -49,12 +50,12 @@ body {
 }
 
 .field {
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(49,87,44,.15);
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(49, 87, 44, 0.15);
 }
 
 .field:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .field-head {
@@ -70,6 +71,16 @@ body {
   color: #31572c;
 }
 
+.field.editing input {
+  width: 80%;
+  padding: 6px 10px;
+  font-size: 1rem;
+  border: 1px solid #90a955;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #132a13;
+}
+
 .edit-btn {
   padding: 0.35rem 0.7rem;
   border: 0;
@@ -81,40 +92,40 @@ body {
 }
 
 .edit-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0,0,0,.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .value {
-    margin: 0.5rem 0 0 0;
-    font-size: 1.05rem;
+  margin: 0.5rem 0 0 0;
+  font-size: 1.05rem;
 }
 
 .value.muted {
-    opacity: 0.7;
-    font-style: italic;
+  opacity: 0.7;
+  font-style: italic;
 }
 
 .footer-bar {
-    background: #a7c957;
-    padding: 1.2em 2em;
-    font-family: inherit;
-    font-size: 1em;
-    color: #222;
-    border-top: 1px solid #222;
-    text-align: center;
+  background: #a7c957;
+  padding: 1.2em 2em;
+  font-family: inherit;
+  font-size: 1em;
+  color: #222;
+  border-top: 1px solid #222;
+  text-align: center;
 }
 
 .footer-bar a {
-    color: #386641;
-    text-decoration: underline;
-    font-weight: bold;
+  color: #386641;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 footer {
-    text-align: center;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
 }
