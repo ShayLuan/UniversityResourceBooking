@@ -1,82 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage My Account</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" type="text/css" href="ManageMyAccount.css" />
-  </head>
-  <body>
-    <header class="nav_bar">
-      <nav>
-        <div class="nav_top">
-          <a href="StudentDashboard.html">Dashboard</a>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <section class="card" id="profile-card">
-        <h1>Personal Information</h1>
 
-        <div class="field">
-          <div class="field-head">
-            <h2>Full Name</h2>
-            <button id="modify-1" class="edit-btn" type="button">Modify</button>
-          </div>
-          <p id="value-1" class="value">John Doe</p>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage My Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="ManageMyAccount.css" />
+</head>
 
-        <div class="field">
-          <div class="field-head">
-            <h2>Email Address</h2>
-            <button id="modify-2" class="edit-btn" type="button">Modify</button>
-          </div>
-          <p id="value-2" class="value">John.Doe@gmail.com</p>
-        </div>
+<body>
+  <header class="nav_bar">
+    <nav>
+      <div class="nav_top">
+        <a href="StudentDashboard.html">Dashboard</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section class="card" id="profile-card">
+      <h1>Personal Information</h1>
 
-        <div class="field">
-          <div class="field-head">
-            <h2>Password</h2>
-            <button id="modify-3" class="edit-btn" type="button">Modify</button>
-          </div>
-          <p id="value-3" class="value" data-mask="true">**********</p>
+      <div class="field">
+        <div class="field-head">
+          <h2>Full Name</h2>
+          <button id="modify-1" class="edit-btn" type="button">Modify</button>
         </div>
+        <p id="value-1" class="value">John Doe</p>
+      </div>
 
-        <div class="field">
-          <div class="field-head">
-            <h2>Cellular Phone</h2>
-            <button id="modify-4" class="edit-btn" type="button">Modify</button>
-          </div>
-          <p id="value-4" class="value muted">Add number</p>
+      <div class="field">
+        <div class="field-head">
+          <h2>Email Address</h2>
+          <button id="modify-2" class="edit-btn" type="button">Modify</button>
         </div>
+        <p id="value-2" class="value">John.Doe@gmail.com</p>
+      </div>
 
-        <div class="field">
-          <div class="field-head">
-            <h2>Home Address</h2>
-            <button id="modify-5" class="edit-btn" type="button">Modify</button>
-          </div>
-          <p id="value-5" class="value muted">Add home address</p>
+      <div class="field">
+        <div class="field-head">
+          <h2>Password</h2>
+          <button id="modify-3" class="edit-btn" type="button">Modify</button>
         </div>
-      </section>
-    </main>
+        <p id="value-3" class="value" data-mask="true">**********</p>
+      </div>
 
-    <footer class="footer-bar">
-      &copy; 2025 Campus Resource Booking System | Contact:
-      <br \ />
-      <a id="footer-link" href="mailto:support@campusbooker.edu"
-        >support@campusbooker.edu</a
-      >
-    </footer>
-    <script type="text/javascript" src="ManageMyAccount.js"></script>
-  </body>
+      <div class="field">
+        <div class="field-head">
+          <h2>Cellular Phone</h2>
+          <button id="modify-4" class="edit-btn" type="button">Modify</button>
+        </div>
+        <p id="value-4" class="value muted">Add number</p>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <h2>Home Address</h2>
+          <button id="modify-5" class="edit-btn" type="button">Modify</button>
+        </div>
+        <p id="value-5" class="value muted">Add home address</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-bar">
+    &copy; 2025 Campus Resource Booking System | Contact:
+    <br \ />
+    <a id="footer-link" href="mailto:support@campusbooker.edu">support@campusbooker.edu</a>
+  </footer>
+  <script type="text/javascript" src="ManageMyAccount.js"></script>
+</body>
+
 </html>

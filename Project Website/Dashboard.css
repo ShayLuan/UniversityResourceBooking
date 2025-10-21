@@ -1,12 +1,59 @@
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Exo 2', sans-serif;
   display: flex;
   min-height: 100vh;
   background: url('sourcePics/campus_pic.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
+.administrator::before,
+.student::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.575);
+  z-index: -1;
+}
+
+.button {
+  font-family: 'Exo 2', sans-serif;
+  background-color: #4f772d;
+  color: white;
+  padding: 12px 28px;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.button:hover,
+.button:focus {
+  background-color: #90a955;
+  cursor: pointer;
+}
+
+#back-button {
+  padding: 0px;
+  color: #4f772d;
+  border-style: none;
+  background: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Exo 2', sans-serif;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#back-button:hover,
+#back-button:focus {
+  color: #90a955;
+  transform: scale(1.05);
+}
 
 .main {
   flex-grow: 1;
@@ -15,26 +62,33 @@ body {
 
 h1 {
   font-size: 2.3rem;
-  color: #132a13;;
+  color: #132a13;
+  ;
   font-weight: 700;
   margin-bottom: 28px;
 }
 
 /* Card links */
 .card-link {
-  display: block;         /* Make the anchor a block element */
-  color: inherit ;         /* Inherit text color from card */
-  text-decoration: none;  /*Remove underline */
-  position: relative;     /* For potential child positioning */
-  border-radius: 16px;    /* Match card’s rounded corners*/
+  display: block;
+  /* Make the anchor a block element */
+  color: inherit;
+  /* Inherit text color from card */
+  text-decoration: none;
+  /*Remove underline */
+  position: relative;
+  /* For potential child positioning */
+  border-radius: 16px;
+  /* Match card’s rounded corners*/
   transition: box-shadow 0.3s, transform 0.3s;
 }
+
 /* Card links when hovered on or clicked */
-.card-link:hover, 
+.card-link:hover,
 .card-link:focus {
   cursor: pointer;
   /* Move the element up by 4 pixels and slightly enlarge it by 3% for a subtle pop and lift effect */
-  transform: translateY(-4px) scale(1.04);      
+  transform: translateY(-4px) scale(1.04);
   text-decoration: none;
 }
 
@@ -49,7 +103,7 @@ h1 {
     Columns grow equally to fill remaining space
     The number of columns adjusts automatically to the container width
   */
-  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 
   gap: 24px;
   margin-top: 20px;
@@ -84,10 +138,23 @@ Reduce main content padding for a better fit
  Change card layout to a single vertical column for easier scrolling and readability
 */
 @media (max-width: 600px) {
-  .main { padding: 24px 8px; }
-  .sidebar { width: 100px; padding: 8px 0; }
-  .sidebar button { font-size: 0.99rem; padding: 12px 12px; }
-  .card-grid { grid-template-columns: 1fr; }
+  .main {
+    padding: 24px 8px;
+  }
+
+  .sidebar {
+    width: 100px;
+    padding: 8px 0;
+  }
+
+  .sidebar button {
+    font-size: 0.99rem;
+    padding: 12px 12px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sidebar {
@@ -113,8 +180,19 @@ Reduce main content padding for a better fit
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.sidebar-link:hover, .sidebar-link:focus {
+.sidebar-link:hover,
+.sidebar-link:focus {
   background: #4f772d;
   color: #ecf39e;
-  box-shadow: 0 2px 8px rgba(50,100,50,0.07) inset;
+  box-shadow: 0 2px 8px rgba(50, 100, 50, 0.07) inset;
+}
+
+.resource-formgroup {
+  margin-bottom: 0.5rem;
+  padding: 10px 12px;
+  border: 1px solid #a7c957;
+  border-radius: 6px;
+  font-size: 1em;
+  background-color: #f8fbe6;
+  font-family: 'Exo 2', sans-serif;
 }
