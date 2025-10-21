@@ -4,6 +4,3 @@ function cancelBooking(id) {
     const li = btn.closest('.booking-item');
     if (li) li.remove();
 }
-function modifyBooking(id) {
-    window.location.href = 'booking-form.html';
-}
