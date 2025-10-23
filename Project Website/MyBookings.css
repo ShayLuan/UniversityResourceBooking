@@ -109,11 +109,13 @@ main {
 }
 
 footer {
-  background-color: #31572c;
-  color: #F4F4F9;
-  text-align: center;
-  padding: 1.2rem 2rem;
-  font-size: 0.9rem;
+    background: #a7c957;
+    padding: 1.2em 2em;
+    font-family: inherit;
+    font-size: 1em;
+    color: #222;
+    border-top: 1px solid #222;
+    text-align: center;
 }
 
 #footer-link:hover,

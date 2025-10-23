@@ -1,0 +1,125 @@
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Exo 2', sans-serif;
+  background: url('sourcePics/campus_pic.jpg') no-repeat center center fixed;
+  background-size: cover;
+  /* make the image as large as possible to cover the container */
+  color: #132a13;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main holding the "frame" */
+main {
+  flex: 1;
+  /* take available vertical space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Nav bar at the top of frame */
+.nav_bar nav {
+  display: flex;
+  justify-content:flex-start;
+  gap: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #cfcccc;
+}
+
+/* Nav bar links */
+.nav_bar nav a {
+  text-decoration: none;
+  color: #132a13;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+/* Nav bar links when hovered on or clicked */
+.nav_bar nav a:hover,
+.nav_bar nav a:focus {
+  color: #90a955;
+}
+
+/* The frame box */
+#frame {
+  background-color: #ecf39e;
+  width: 90%;
+  max-width: 600px;
+  min-height: 400px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 17px rgb(0, 0, 0, 0.25);
+  padding: 15px;
+}
+
+/*Welcome text box */
+.welcome-text {
+  flex: 1;
+  /* to take remaining space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+/*Welcome text */
+.welcome-text h1 {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Button group class */
+.button-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
+  padding-top: 15px;
+}
+
+/* Login and Register buttons */
+.button {
+  background-color: #4f772d;
+  color: white;
+  padding: 12px 28px;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+/* Login and Register buttons when hovered on or clicked */
+.button:hover,
+.button:focus {
+  background-color: #90a955;
+}
+
+/* Footer  */
+footer {
+  background-color: #31572c;
+  /* rich navy with transparency */
+  color: #F4F4F9;
+  text-align: center;
+  padding: 1.2rem 2rem;
+  font-size: 0.9rem;
+}
+
+/* Footer's contact link when hovered on or clicked */
+#footer-link:hover,
+#footer-link:focus {
+  color: #ecf39e;
+}
+
+/*Background image modifications*/
+.homepage {
+  background: url('campus_pic.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
