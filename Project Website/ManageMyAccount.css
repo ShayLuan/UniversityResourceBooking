@@ -9,6 +9,17 @@ body {
   background-size: cover;
 }
 
+.manage::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.575);
+  z-index: -1;
+}
+
 .nav_bar {
   align-items: center;
   padding: 1rem 2rem;
@@ -107,25 +118,21 @@ body {
 }
 
 .footer-bar {
-  background: #a7c957;
-  padding: 1.2em 2em;
-  font-family: inherit;
-  font-size: 1em;
-  color: #222;
-  border-top: 1px solid #222;
-  text-align: center;
+    background: #a7c957;
+    padding: 1.2em 2em;
+    font-family: inherit;
+    font-size: 1em;
+    color: #222;
+    border-top: 1px solid #222;
+    text-align: center;
 }
 
 .footer-bar a {
-  color: #386641;
-  text-decoration: underline;
-  font-weight: bold;
+    color: #386641;
+    text-decoration: underline;
+    font-weight: bold;
 }
 
 footer {
-  text-align: center;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
+    text-align: center;
 }

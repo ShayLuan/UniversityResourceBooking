@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
-        rel="stylesheet">
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
     <link type="text/css" rel="stylesheet" href="Booking-form.css" />
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-</head>
+  </head>
 
-<div class="container">
-    <header class="nav_bar_bookingform">
+  <body class="booking">
+    <div class="container">
+      <header class="nav_bar_bookingform">
         <nav>
-            <div class="nav-left">
-                <a href="StudentDashboard.html">Dashboard</a>
-            </div>
-            <div class="nav-right">
-                <a href="MyBookings.html">My Bookings</a>
-            </div>
+          <div class="nav-left">
+            <a href="StudentDashboard.html">Dashboard</a>
+          </div>
+          <div class="nav-right">
+            <a href="MyBookings.html">My Bookings</a>
+          </div>
         </nav>
-    </header>
+      </header>
+      <div class="booking-form">
+        <h1>Book a Resource</h1>
+        <form id="bookingForm">
+          <div class="form-group">
+            <label for="resource">Select Resource:</label>
+            <select name="resource" id="resource" required>
+              <option value="">Choose a resource...</option>
+              <option value="study-rooms">Study Rooms</option>
+              <option value="computer-labs">Computer Labs</option>
+              <option value="sports-facilities">Sports Facilities</option>
+              <option value="event-spaces">Event Spaces</option>
+              <option value="library-resources">Library Resources</option>
+            </select>
+          </div>
 
-    <body>
-        <div class="booking-form">
-            <h1>Book a Resource</h1>
-            <form id="bookingForm">
-                <div class="form-group">
-                    <label for="resource">Select Resource:</label>
-                    <select name="resource" id="resource" required>
-                        <option value="">Choose a resource...</option>
-                        <option value="study-rooms">Study Rooms</option>
-                        <option value="computer-labs">Computer Labs</option>
-                        <option value="sports-facilities">Sports Facilities</option>
-                        <option value="event-spaces">Event Spaces</option>
-                        <option value="library-resources">Library Resources</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="date">Select Date: </label>
-                    <input id="date" name="date" placeholder="Choose a date" required>
-                </div>
-                <div class="form-group">
-                    <label for="time">Select Time: </label>
-                    <div id="time-grid" class="time-grid">
-                        <!-- space for timeslots to be generated -->
-                    </div>
-                    <input type="hidden" id="time" name="time">
-                </div>
-
-            <div class="button-group">
-                <button type="submit" class="button">Confirm</button>
+          <div class="form-group">
+            <label for="date">Select Date: </label>
+            <input id="date" name="date" placeholder="Choose a date" required />
+          </div>
+          <div class="form-group">
+            <label for="time">Select Time: </label>
+            <div id="time-grid" class="time-grid">
+              <!-- space for timeslots to be generated -->
             </div>
+            <input type="hidden" id="time" name="time" />
+          </div>
 
-            </form>
-        </div>
-</div>
-<footer class="footer-bar">
-    &copy; 2025 Campus Resource Booking System | Contact:
-    <br \ />
-    <a id="footer-link" href="mailto:support@campusbooker.edu">support@campusbooker.edu</a>
-</footer>
-<script type="text/javascript" src="Booking-form.js"></script>
-</body>
-
+          <div class="button-group">
+            <button type="submit" class="button">Confirm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <footer class="footer-bar">
+      &copy; 2025 Campus Resource Booking System | Contact:
+      <br \ />
+      <a id="footer-link" href="mailto:support@campusbooker.edu"
+        >support@campusbooker.edu</a
+      >
+    </footer>
+    <script type="text/javascript" src="Booking-form.js"></script>
+  </body>
 </html>
