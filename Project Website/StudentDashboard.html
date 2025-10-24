@@ -1,56 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="StudentDashboard.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet" />
-  <title>Student Dashboard</title>
-  <link rel="stylesheet" href="Dashboard.css" />
-</head>
+  <body class="student">
+    <nav class="sidebar">
+      <a href="ResourcesLogin.html" class="sidebar-link"
+        ><span>📖</span> Browse Resources</a
+      >
+      <a href="MyBookings.html" class="sidebar-link"
+        ><span>📅</span>My Bookings</a
+      >
+      <a href="Home.html" class="sidebar-link"><span>🏠</span> Home</a>
+      <a href="Login.html" class="sidebar-link"><span>🚪</span> Log out</a>
+    </nav>
+    <div class="main">
+      <h1>Welcome, Dear Student!</h1>
+      <div class="card-grid">
+        <a href="ResourceSpotlight.html" class="card-link">
+          <div class="card">
+            <h2>Resource Spotlight</h2>
+            <p>Track current availability and booking times.</p>
+          </div>
+        </a>
 
-<body class="student">
-  <nav class="sidebar">
-    <a href="ResourcesLogin.html" class="sidebar-link"><span>📖</span> Browse Resources</a>
-    <a href="booking-form.html" class="sidebar-link"><span>📝</span> Book</a>
-    <a href="MyBookings.html" class="sidebar-link"><span>📅</span>My Bookings</a>
-    <a href="Home.html" class="sidebar-link"><span>🚪</span> Log out</a>
-  </nav>
-  <div class="main">
-    <h1>Welcome, Dear Student!</h1>
-    <div class="card-grid">
-      <a href="ResourceSpotlight.html" class="card-link">
-        <div class="card">
-          <h2>Resource Spotlight</h2>
-          <p>Track current availability and booking times.</p>
-        </div>
-      </a>
+        <a href="ManageMyAccount.html" class="card-link">
+          <div class="card">
+            <h2>Manage My Account</h2>
+            <p>Update personal details and contact information.</p>
+          </div>
+        </a>
 
-      <a href="ManageMyAccount.html" class="card-link">
-        <div class="card">
-          <h2>Manage My Account</h2>
-          <p>Update personal details and contact information.</p>
-        </div>
-      </a>
+        <a href="mailto:support@campusbooker.edu" class="card-link">
+          <div class="card">
+            <h2>Contact an Admin</h2>
+            <p>
+              Get helpful support or assistance from our responsive
+              administrator team.
+            </p>
+          </div>
+        </a>
 
-      <a href="mailto:support@campusbooker.edu" class="card-link">
-        <div class="card">
-          <h2>Contact an Admin</h2>
-          <p>
-            Get helpful support or assistance from our responsive
-            administrator team.
-          </p>
-        </div>
-      </a>
+        <a href="booking-form.html" class="card-link">
+          <div class="card">
+            <h2>Book a Resource</h2>
+            <p>
+              Reserve study rooms, equipment, or other campus resources in just
+              a few clicks.
+            </p>
+          </div>
+        </a>
+      </div>
     </div>
-  </div>
-</body>
-
+  </body>
 </html>
