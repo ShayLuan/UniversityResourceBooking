@@ -11,10 +11,22 @@ document.getElementById('back-button').addEventListener('click', function (event
     document.getElementById('edit-tools').style.display = "none";
 });
 
-document.getElementById('resourceSelect').addEventListener('click', function (event) {
+document.getElementById('resourceSelect').addEventListener('change', function (event) {
     document.getElementById('operation-selector').style.display = "block";
 });
 
-document.getElementById('operation-selector').addEventListener('click', function (event) {
+document.getElementById('operation-selector').addEventListener('change', function (event) {
     document.getElementById('confirm-changes').style.display = "flex";
+});
+
+document.getElementById('add-resource-selector').addEventListener('change', function (event) {
+    if (this.value) {
+        document.getElementById('add-resource-confirm-button').style.display = "flex";
+    } else {
+        document.getElementById('add-resource-confirm-button').style.display = "none";
+    }
+});
+
+document.getElementById('analyticsCard').addEventListener('click', function () {
+    window.open('analytics.html', '_blank', 'width=900,height=600');
 });

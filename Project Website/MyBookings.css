@@ -109,13 +109,13 @@ main {
 }
 
 footer {
-    background: #a7c957;
-    padding: 1.2em 2em;
-    font-family: inherit;
-    font-size: 1em;
-    color: #222;
-    border-top: 1px solid #222;
-    text-align: center;
+  background: #a7c957;
+  padding: 1.2em 2em;
+  font-family: inherit;
+  font-size: 1em;
+  color: #222;
+  border-top: 1px solid #222;
+  text-align: center;
 }
 
 #footer-link:hover,
@@ -131,4 +131,7 @@ footer {
   }
 }
 
-
+body.booking-history {
+  background: url('sourcePics/campus_pic_dim.jpg') no-repeat center center fixed;
+  background-size: cover;
+}

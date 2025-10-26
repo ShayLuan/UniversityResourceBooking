@@ -24,7 +24,7 @@ main {
 /* Nav bar at the top of frame */
 .nav_bar nav {
   display: flex;
-  justify-content:flex-start;
+  justify-content: flex-start;
   gap: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid #cfcccc;
@@ -116,4 +116,9 @@ footer {
 #footer-link:hover,
 #footer-link:focus {
   color: #ecf39e;
+}
+
+body.analytics {
+  background: url('sourcePics/campus_pic_dim.jpg') no-repeat center center fixed;
+  background-size: cover;
 }

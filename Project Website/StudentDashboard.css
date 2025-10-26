@@ -26,26 +26,29 @@ body {
 
 h1 {
   font-size: 2.3rem;
-  color: #132a13;;
+  color: #132a13;
+  ;
   font-weight: 700;
   margin-bottom: 28px;
 }
 
 /* Card links */
 .card-link {
-  display: block;         
-  color: inherit ;         /* Inherits text color from card*/
-  text-decoration: none;  
-  position: relative;     
-  border-radius: 16px;   
+  display: block;
+  color: inherit;
+  /* Inherits text color from card*/
+  text-decoration: none;
+  position: relative;
+  border-radius: 16px;
   transition: box-shadow 0.3s, transform 0.3s;
 }
+
 /* Card links when hovered on or clicked*/
-.card-link:hover, 
+.card-link:hover,
 .card-link:focus {
   cursor: pointer;
   /* Move the element up by 4 pixels and slightly enlarge it by 3% for a subtle pop and lift effect*/
-  transform: translateY(-4px) scale(1.04);      
+  transform: translateY(-4px) scale(1.04);
   text-decoration: none;
 }
 
@@ -58,7 +61,7 @@ h1 {
     Automatically fits as many columns as possible
     Each column is at least 450px wide
   */
-  grid-template-columns: repeat(auto-fit,minmax(450px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   row-gap: 28px;
   column-gap: 28px;
   margin-top: 20px;
@@ -91,10 +94,23 @@ Responsive adjustments for small screens (600px or less)
  Change card layout to a single vertical column
 */
 @media (max-width: 600px) {
-  .main { padding: 24px 8px; }
-  .sidebar { width: 100px; padding: 8px 0; }
-  .sidebar button { font-size: 0.99rem; padding: 12px 12px; }
-  .card-grid { grid-template-columns: 1fr; }
+  .main {
+    padding: 24px 8px;
+  }
+
+  .sidebar {
+    width: 100px;
+    padding: 8px 0;
+  }
+
+  .sidebar button {
+    font-size: 0.99rem;
+    padding: 12px 12px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sidebar {
@@ -120,8 +136,9 @@ Responsive adjustments for small screens (600px or less)
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.sidebar-link:hover, .sidebar-link:focus {
+.sidebar-link:hover,
+.sidebar-link:focus {
   background: #4f772d;
   color: #ecf39e;
-  box-shadow: 0 2px 8px rgba(50,100,50,0.07) inset;
+  box-shadow: 0 2px 8px rgba(50, 100, 50, 0.07) inset;
 }
