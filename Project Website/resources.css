@@ -212,22 +212,17 @@ html {
     outline: none;
 }
 
-.footer-bar {
-    background: #a7c957;
-    padding: 1.2em 2em;
-    font-family: inherit;
-    font-size: 1em;
-    color: #222;
-    border-top: 1px solid #222;
-    text-align: center;
-}
-
-.footer-bar a {
-    color: #386641;
-    text-decoration: underline;
-    font-weight: bold;
-}
-
 footer {
-    text-align: center;
+  background: #a7c957;
+  padding: 1.2em 2em;
+  font-family: inherit;
+  font-size: 1em;
+  color: #222;
+  border-top: 1px solid #222;
+  text-align: center;
+}
+
+#footer-link:hover,
+#footer-link:focus {
+  color: #ecf39e;
 }

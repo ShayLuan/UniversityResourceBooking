@@ -6,11 +6,20 @@ body,
 html {
   height: 100%;
   margin: 0;
+  display: flex;
+  flex-direction: column;
   font-family: 'Exo 2', sans-serif;
   color: #132a13;
 }
 
+body.mybookingspage{
+  background:
+    linear-gradient(rgba(255,255,255,.575), rgba(255,255,255,.575)),
+    url("sourcePics/PACCAR-Hall-mag.jpg") center/cover no-repeat fixed;
+}
+
 main {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,21 +100,34 @@ main {
   gap: 8px;
 }
 
-.button {
-  background-color: #4f772d;
-  color: white;
-  padding: 8px 16px;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 6px;
-  border: none;
+.rebook-button {
+  padding: 0.35rem 0.7rem;
+  border: 0;
+  border-radius: 10px;
   cursor: pointer;
+  background: #31572c;
+  color: #ecf39e;
+  font-weight: 600;
+}
+
+.button-outline {
+  padding: 0.35rem 0.7rem;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #31572c;
+  color: #ecf39e;
+  font-weight: 600;
 }
 
 .button.outline {
-  background-color: transparent;
-  color: #132a13;
-  border: 1px solid #4f772d;
+  padding: 0.35rem 0.7rem;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #31572c;
+  color: #ecf39e;
+  font-weight: 600;
 }
 
 footer {
@@ -129,9 +151,4 @@ footer {
     align-items: flex-start;
     gap: 8px;
   }
-}
-
-body.booking-history {
-  background: url('sourcePics/campus_pic_dim.jpg') no-repeat center center fixed;
-  background-size: cover;
 }
