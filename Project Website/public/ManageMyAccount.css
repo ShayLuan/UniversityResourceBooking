@@ -71,9 +71,7 @@ body {
 
 .field-head {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 12px;
 }
 
 .field-head h2 {
@@ -127,12 +125,17 @@ body {
     text-align: center;
 }
 
-.footer-bar a {
-    color: #386641;
-    text-decoration: underline;
-    font-weight: bold;
+footer {
+  background: #a7c957;
+  padding: 1.2em 2em;
+  font-family: inherit;
+  font-size: 1em;
+  color: #222;
+  border-top: 1px solid #222;
+  text-align: center;
 }
 
-footer {
-    text-align: center;
+#footer-link:hover,
+#footer-link:focus {
+  color: #ecf39e;
 }
