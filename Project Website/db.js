@@ -1,26 +1,60 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',          
-    password: '',          
-    database: 'campus_booking'
-});
+// credentials that we'll use for now
+// add more if needed
+const DB_HOST = 'localhost';
+const DB_USER = 'root';
+const DB_PASS = 'soen287gogo';
+const DB_NAME = 'campus_booking';
 
-module.exports = pool.promise();
+// Create database if missing
+const poolPromise = (async () => {
+    const adminConn = await mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASS
+    });
+    await adminConn.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\``);
+    await adminConn.end();
+
+    const pool = mysql.createPool({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASS,
+        database: DB_NAME,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+    });
+
+    // does schema exist?
+    await pool.query(`CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL DEFAULT 'student'
+    )`);
+
+    return pool;
+})();
+
 async function findUser(email, password) {
-    const [rows] = await pool.promise().query(
+    const pool = await poolPromise;
+    const [rows] = await pool.query(
         "SELECT * FROM users WHERE email = ? AND password = ? LIMIT 1",
         [email, password]
     );
-    return rows[0];
+    return rows[0] || null;
 }
 
-async function addUser(email, password, role = 'student') {
-    await pool.promise().query(
-        "INSERT INTO users (email, password, role) VALUES (?, ?, ?)",
-        [email, password, role]
+async function addUser(name, email, password, role = 'student') {
+    const pool = await poolPromise;
+    const [result] = await pool.query(
+        "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+        [name, email, password, role]
     );
+    return result.insertId;
 }
 
 module.exports = { findUser, addUser };
