@@ -44,6 +44,7 @@ form.addEventListener("submit", (event) => {
   const missing = [];
   const date = document.getElementById("date");
   const time = document.getElementById("time");
+  const duration = document.getElementById("duration");
   
   if (!date.value) {
     missing.push("Date");
@@ -51,6 +52,10 @@ form.addEventListener("submit", (event) => {
 
   if (!time.value) { 
     missing.push("Time");
+  }
+
+  if (!duration.value) { // NEW
+    missing.push("Time period");
   }
 
   if (missing.length > 0) {

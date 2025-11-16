@@ -39,16 +39,28 @@
       <div class="booking-form">
         <h1>Book a Resource</h1>
         <form id="bookingForm">
-          <div class="form-group">
-            <label for="resource">Select Resource:</label>
-            <select name="resource" id="resource" required>
-              <option value="">Choose a resource...</option>
-              <option value="study-rooms">Study Rooms</option>
-              <option value="computer-labs">Computer Labs</option>
-              <option value="sports-facilities">Sports Facilities</option>
-              <option value="event-spaces">Event Spaces</option>
-              <option value="library-resources">Library Resources</option>
-            </select>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="resource">Select Resource:</label>
+              <select name="resource" id="resource" required>
+                <option value="">Choose a resource...</option>
+                <option value="study-rooms">Study Rooms</option>
+                <option value="computer-labs">Computer Labs</option>
+                <option value="sports-facilities">Sports Facilities</option>
+                <option value="event-spaces">Event Spaces</option>
+                <option value="library-resources">Library Resources</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="duration">Time period:</label>
+              <select name="duration" id="duration" required>
+                <option value="">Choose a period...</option>
+                <option value="30">30 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="90">1 hour 30 minutes</option>
+                <option value="120">2 hours</option>
+              </select>
+            </div>
           </div>
 
           <div class="form-group">
