@@ -37,6 +37,17 @@ const poolPromise = (async () => {
         role VARCHAR(50) NOT NULL DEFAULT 'student'
     )`);
 
+    await pool.query(`CREATE TABLE IF NOT EXISTS bookings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        resource VARCHAR(255) NOT NULL,
+        date DATE NOT NULL,
+        time VARCHAR(50) NOT NULL,
+        duration INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`);
+
     return pool;
 })();
 
@@ -66,4 +77,40 @@ async function addUser(name, email, password, role = 'student') {
     return result.insertId;
 }
 
-module.exports = { findUser, addUser };
+async function createBooking(userId, resource, date, time, duration) {
+    const pool = await poolPromise;
+    const [result] = await pool.query(
+        "INSERT INTO bookings (user_id, resource, date, time, duration) VALUES (?, ?, ?, ?, ?)",
+        [userId, resource, date, time, duration]
+    );
+    return result.insertId;
+}
+
+async function getUserBookings(userId) {
+    const pool = await poolPromise;
+    const [rows] = await pool.query(
+        "SELECT * FROM bookings WHERE user_id = ? ORDER BY date ASC, time ASC",
+        [userId]
+    );
+    return rows;
+}
+
+async function updateBooking(bookingId, userId, resource, date, time, duration) {
+    const pool = await poolPromise;
+    const [result] = await pool.query(
+        "UPDATE bookings SET resource = ?, date = ?, time = ?, duration = ? WHERE id = ? AND user_id = ?",
+        [resource, date, time, duration, bookingId, userId]
+    );
+    return result.affectedRows > 0;
+}
+
+async function deleteBooking(bookingId, userId) {
+    const pool = await poolPromise;
+    const [result] = await pool.query(
+        "DELETE FROM bookings WHERE id = ? AND user_id = ?",
+        [bookingId, userId]
+    );
+    return result.affectedRows > 0;
+}
+
+module.exports = { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking };

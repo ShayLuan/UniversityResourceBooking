@@ -175,28 +175,49 @@ select option {
     max-width: 250px;
 }
 
-/* time slot styles */
-.time-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    flex-wrap: wrap;
-    gap: 16px;
+/* guys i changed this part for a scroller */
+.time-scroll {
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+    overflow-y: auto;
+    gap: 12px;
     margin-top: 20px;
-    justify-items: center;
+    padding: 8px;
+    border: 1px solid #a7c957;
+    border-radius: 7px;
+    background-color: #f8fbe6;
+}
+
+.time-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.time-scroll::-webkit-scrollbar-track {
+    background: #e9f5db;
+    border-radius: 4px;
+}
+
+.time-scroll::-webkit-scrollbar-thumb {
+    background: #a7c957;
+    border-radius: 4px;
+}
+
+.time-scroll::-webkit-scrollbar-thumb:hover {
+    background: #90a955;
 }
 
 .time-slot {
-    padding: 8px 0;
-    min-width: 85px;
+    padding: 10px 12px;
     background: #e9f5db;
     border: 1px solid #a7c957;
     border-radius: 7px;
     cursor: pointer;
     font-size: 1em;
-    margin: 0;
     transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     text-align: center;
+    flex-shrink: 0;
 }
 
 .time-slot:hover {

@@ -30,46 +30,8 @@
       <section id="mybookings-frame">
         <h1>My Bookings</h1>
 
-        <ul class="booking-list">
-          <li class="booking-item">
-            <div class="details">
-              <strong>Study Room A</strong>
-              <span>Tuesday, Oct 28, 2025 • 10:00–12:00</span>
-            </div>
-            <div class="actions">
-              <button id="modify-1" class="button-outline" type="button">
-                Modify
-              </button>
-              <button
-                id="booking-1"
-                class="button outline"
-                type="button"
-                onclick="cancelBooking('booking-1')"
-              >
-                Cancel
-              </button>
-            </div>
-          </li>
-
-          <li class="booking-item">
-            <div class="details">
-              <strong>Computer Lab 1</strong>
-              <span>Sunday, Nov 2, 2025 • 13:00–15:00</span>
-            </div>
-            <div class="actions">
-              <button id="modify-2" class="button-outline" type="button">
-                Modify
-              </button>
-              <button
-                id="booking-2"
-                class="button outline"
-                type="button"
-                onclick="cancelBooking('booking-2')"
-              >
-                Cancel
-              </button>
-            </div>
-          </li>
+        <ul class="booking-list" id="booking-list">
+          <!-- Bookings will be loaded dynamically -->
         </ul>
       </section>
     </main>

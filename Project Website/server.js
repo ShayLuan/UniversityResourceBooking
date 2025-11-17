@@ -1,5 +1,6 @@
 const express = require('express');
-const { findUser, addUser } = require('./db.js');
+const session = require('express-session');
+const { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking } = require('./db.js');
 const bcrypt = require("bcryptjs"); // to hash passwords
 
 const app = express();
@@ -8,6 +9,14 @@ const port = 3000;
 app.use(express.static('public')); // make all files in the public folder accessible
 app.use(express.urlencoded({ extended: true })); // parse URL-encoded bodies
 app.use(express.json()); // parse JSON bodies
+
+// Session configuration
+app.use(session({
+    secret: 'campus-booking-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+}));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/Home.html');
@@ -25,6 +34,11 @@ app.post('/login', async (req, res) => {
                 <p><a href="/Login.html">Try again</a></p>
             `);
         }
+
+        // Store user in session
+        req.session.userId = user.id;
+        req.session.userEmail = user.email;
+        req.session.userRole = user.role;
 
         if (user.role === 'admin') {
             return res.redirect('/AdminDashboard.html');
@@ -84,6 +98,112 @@ app.post('/Register', async (req, res) => {
             error: 'unknown',
             message: 'Something went wrong. Please try again.'
         });
+    }
+});
+
+// Create booking endpoint
+app.post('/api/bookings', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const { resource, date, time, duration } = req.body;
+
+        if (!resource || !date || !time || !duration) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const bookingId = await createBooking(req.session.userId, resource, date, time, duration);
+        return res.json({ ok: true, bookingId });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to create booking' });
+    }
+});
+
+// Get user bookings endpoint
+app.get('/api/bookings', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const bookings = await getUserBookings(req.session.userId);
+        
+        // okay maybe formatting the date here helps with display?
+        const formattedBookings = bookings.map(booking => {
+            const formatted = { ...booking };
+            // convert date to YYYY-MM-DD string
+            if (booking.date instanceof Date) {
+                const year = booking.date.getFullYear();
+                const month = String(booking.date.getMonth() + 1).padStart(2, '0');
+                const day = String(booking.date.getDate()).padStart(2, '0');
+                formatted.date = `${year}-${month}-${day}`;
+            } else if (typeof booking.date === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(booking.date)) {
+                const date = new Date(booking.date);
+                if (!isNaN(date.getTime())) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    formatted.date = `${year}-${month}-${day}`;
+                }
+            }
+            return formatted;
+        });
+        
+        return res.json(formattedBookings);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to fetch bookings' });
+    }
+});
+
+// Update booking endpoint
+app.put('/api/bookings/:id', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const bookingId = parseInt(req.params.id);
+        const { resource, date, time, duration } = req.body;
+
+        if (!resource || !date || !time || !duration) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const updated = await updateBooking(bookingId, req.session.userId, resource, date, time, duration);
+
+        if (updated) {
+            return res.json({ ok: true });
+        } else {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to update booking' });
+    }
+});
+
+
+app.delete('/api/bookings/:id', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const bookingId = parseInt(req.params.id);
+        const deleted = await deleteBooking(bookingId, req.session.userId);
+
+        if (deleted) {
+            return res.json({ ok: true });
+        } else {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to delete booking' });
     }
 });
 

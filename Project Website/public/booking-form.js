@@ -6,23 +6,34 @@ flatpickr("#date", {
 });
 
 
-const times = [
-    "8:00 AM", "8:15 AM", "8:30 AM", "8:45 AM",
-    "9:00 AM", "9:15 AM", "9:30 AM", "9:45 AM",
-    "10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM",
-    "11:00 AM", "11:15 AM", "11:30 AM", "11:45 AM",
-    "12:00 PM", "12:15 PM", "12:30 PM", "12:45 PM",
-    "1:00 PM", "1:15 PM", "1:30 PM", "1:45 PM",
-    "2:00 PM", "2:15 PM", "2:30 PM", "2:45 PM",
-    "3:00 PM", "3:15 PM", "3:30 PM", "3:45 PM",
-    "4:00 PM", "4:15 PM", "4:30 PM", "4:45 PM",
-    "5:00 PM", "5:15 PM", "5:30 PM", "5:45 PM",
-    "6:00 PM", "6:15 PM", "6:30 PM", "6:45 PM",
-    "7:00 PM", "7:15 PM", "7:30 PM", "7:45 PM",
-    "8:00 PM"
-];
+// let's forget about the hardcoded times
+function generateTimeSlots() {
+    const times = [];
+    for (let hour = 8; hour <= 20; hour++) {
+        // Convert to 12-hour format
+        let hour12 = hour;
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        if (hour > 12) {
+            hour12 = hour - 12;
+        } else if (hour === 0) {
+            hour12 = 12;
+        }
+        
+        // Add :00 slot
+        const time00 = `${hour12}:00 ${ampm}`;
+        times.push(time00);
+        
+        // no :30 for last one 
+        if (hour < 20) {
+            const time30 = `${hour12}:30 ${ampm}`;
+            times.push(time30);
+        }
+    }
+    return times;
+}
 
-const grid = document.getElementById("time-grid");
+const times = generateTimeSlots();
+const timeScrollContainer = document.getElementById("time-scroll");
 const timeInput = document.getElementById("time");
 
 times.forEach(time => {
@@ -34,17 +45,51 @@ times.forEach(time => {
         slot.classList.add('selected');
         timeInput.value = time;
     };
-    grid.appendChild(slot);
+    timeScrollContainer.appendChild(slot);
 });
+
+// Check if we're modifying an existing booking
+let modifyBookingId = null;
+const modifyData = sessionStorage.getItem('modifyBooking');
+if (modifyData) {
+    try {
+        const booking = JSON.parse(modifyData);
+        modifyBookingId = booking.id;
+        
+        // Pre-fill the form
+        document.getElementById('resource').value = booking.resource;
+        document.getElementById('date').value = booking.date;
+        document.getElementById('duration').value = booking.duration;
+        
+        // Set the time slot
+        timeInput.value = booking.time;
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            if (slot.textContent.trim() === booking.time) {
+                slot.classList.add('selected');
+            }
+        });
+        
+        // Update form title
+        document.querySelector('h1').textContent = 'Modify Booking';
+        
+        // Clear sessionStorage after using it
+        sessionStorage.removeItem('modifyBooking');
+    } catch (err) {
+        console.error('Error parsing modify booking data:', err);
+    }
+}
 
 // Required fields before confirm
 const form = document.getElementById("bookingForm");
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  
   const missing = [];
   const date = document.getElementById("date");
   const time = document.getElementById("time");
   const duration = document.getElementById("duration");
+  const resource = document.getElementById("resource");
   
   if (!date.value) {
     missing.push("Date");
@@ -54,12 +99,47 @@ form.addEventListener("submit", (event) => {
     missing.push("Time");
   }
 
-  if (!duration.value) { // NEW
+  if (!duration.value) {
     missing.push("Time period");
   }
 
+  if (!resource.value) {
+    missing.push("Resource");
+  }
+
   if (missing.length > 0) {
-    event.preventDefault();
     alert("You're missing the following required field:\n• " + missing.join("\n• "));
+    return;
+  }
+
+  // Submit booking to backend
+  try {
+    const url = modifyBookingId ? `/api/bookings/${modifyBookingId}` : '/api/bookings';
+    const method = modifyBookingId ? 'PUT' : 'POST';
+    
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        resource: resource.value,
+        date: date.value,
+        time: time.value,
+        duration: parseInt(duration.value)
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.ok) {
+      alert(modifyBookingId ? 'Booking updated successfully!' : 'Booking created successfully!');
+      window.location.href = '/MyBookings.html';
+    } else {
+      alert(`Failed to ${modifyBookingId ? 'update' : 'create'} booking: ` + (data.error || 'Unknown error'));
+    }
+  } catch (err) {
+    console.error(err);
+    alert(`Error ${modifyBookingId ? 'updating' : 'creating'} booking. Please try again.`);
   }
 });
