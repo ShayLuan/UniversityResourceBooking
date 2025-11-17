@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const bcrypt = require("bcryptjs"); // to hash passwords
 
 // credentials that we'll use for now
 // add more if needed
@@ -41,11 +42,19 @@ const poolPromise = (async () => {
 
 async function findUser(email, password) {
     const pool = await poolPromise;
+
     const [rows] = await pool.query(
-        "SELECT * FROM users WHERE email = ? AND password = ? LIMIT 1",
-        [email, password]
+        "SELECT * FROM users WHERE email = ? LIMIT 1",
+        [email]
     );
-    return rows[0] || null;
+    const user = rows[0];
+    if (!user) return null;
+
+    // comparing entered password with the hashed one in the DB
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return null;
+
+    return user;
 }
 
 async function addUser(name, email, password, role = 'student') {
