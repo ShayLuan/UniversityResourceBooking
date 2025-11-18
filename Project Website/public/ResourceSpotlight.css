@@ -5,6 +5,18 @@
 }
 
 html, body { overflow-x: hidden; }
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+}
+footer {
+  margin-top: auto;
+}
 
 body {
   font-family: 'Exo 2', sans-serif;

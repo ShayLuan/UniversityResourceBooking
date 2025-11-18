@@ -48,8 +48,21 @@ const poolPromise = (async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )`);
 
+    // ✅ ADD RESOURCES TABLE HERE (INSIDE async)
+    await pool.query(`CREATE TABLE IF NOT EXISTS resources (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        category VARCHAR(100) NOT NULL,
+        description TEXT,
+        location VARCHAR(255),
+        capacity INT,
+        image_url VARCHAR(500)
+    )`);
+
     return pool;
 })();
+
+// ------------ FUNCTIONS ------------
 
 async function findUser(email, password) {
     const pool = await poolPromise;
@@ -61,7 +74,6 @@ async function findUser(email, password) {
     const user = rows[0];
     if (!user) return null;
 
-    // comparing entered password with the hashed one in the DB
     const match = await bcrypt.compare(password, user.password);
     if (!match) return null;
 
@@ -113,4 +125,10 @@ async function deleteBooking(bookingId, userId) {
     return result.affectedRows > 0;
 }
 
-module.exports = { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking };
+async function getAllResources() {
+    const pool = await poolPromise;
+    const [rows] = await pool.query("SELECT * FROM resources ORDER BY category, name");
+    return rows;
+}
+
+module.exports = { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking , getAllResources };

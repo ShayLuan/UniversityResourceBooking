@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require('express-session');
-const { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking } = require('./db.js');
+const { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking , getAllResources } = require('./db.js');
 const bcrypt = require("bcryptjs"); // to hash passwords
 
 const app = express();
@@ -207,6 +207,20 @@ app.delete('/api/bookings/:id', async (req, res) => {
     }
 });
 
+
+// fetching all the resources
+app.get("/api/resources", async (req, res) => {
+    try {
+        const resources = await getAllResources();
+        res.json(resources);  // sending as a JSON to the frontend
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load resources" });
+    }
+});
+
+
+//listening to the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

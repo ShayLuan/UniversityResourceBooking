@@ -5,82 +5,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Resource Spotlight</title>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
+
+  <!-- google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="ResourceSpotlight.css" />
 </head>
 
 <body class="spotlight">
+
+  <!-- Navbar -->
   <header class="nav_bar_resources">
     <nav>
       <div class="nav-left">
         <a href="StudentDashboard.html">Dashboard</a>
       </div>
-      <div class="nav-right"> <a href="booking-form.html">Book</a>
+      <div class="nav-right">
+        <a href="booking-form.html">Book</a>
       </div>
     </nav>
   </header>
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Resource Spotlight</title>
-    <link rel="stylesheet" href="ResourceSpotlight.css" />
-  </head>
+  
+  <main class="container">
+    <section class="layout">
 
-  <body>
-    <header class="nav_bar_resources">
-      <nav>
-        <div class="nav-left">
-          <a href="StudentDashboard.html">Dashboard</a>
-          <a href="booking-form.html">Book</a>
-        </div>
-      </nav>
-    </header>
-
-    <main class="container" <section class="layout">
+      <!--  filtering dropdown  -->
       <aside class="filter-card">
         <label for="resourceSelect">Select a Resource</label>
+
+        
         <select id="resourceSelect" name="resource">
-          <optgroup label="Study Rooms">
-            <option>Study Room A</option>
-            <option>Study Room B</option>
-            <option>Study Room C</option>
-          </optgroup>
-          <optgroup label="Computer Labs">
-            <option>Computer Lab 1</option>
-            <option>Computer Lab 2</option>
-            <option>Computer Lab 3</option>
-          </optgroup>
-          <optgroup label="Gyms & Sports">
-            <option>Gymnasium</option>
-            <option>Fitness Center</option>
-            <option>Indoor Court</option>
-          </optgroup>
-          <optgroup label="Event Spaces">
-            <option>Event Space A</option>
-            <option>Event Space B</option>
-          </optgroup>
-          <optgroup label="Library Resources">
-            <option>Library Study Pods</option>
-            <option>Media Room</option>
-            <option>Quiet Reading Room</option>
-          </optgroup>
+          <option disabled selected>Loading resources...</option>
         </select>
       </aside>
 
+      <!-- calender -->
       <section class="calendar-card" aria-label="Calendar">
         <div class="calendar-header">
           <h2>October 2025</h2>
         </div>
+
         <div class="calendar-grid">
           <div class="dow">Sun</div>
           <div class="dow">Mon</div>
@@ -123,22 +92,67 @@
           <div class="day">29</div>
           <div class="day">30</div>
           <div class="day">31</div>
+
           <div class="day empty"></div>
           <div class="day empty"></div>
           <div class="day empty"></div>
           <div class="day empty"></div>
         </div>
       </section>
-      </section>
-    </main>
-    
-    <footer class="footer-bar">
-      &copy; 2025 Campus Resource Booking System | Contact:
-      <br \ />
-      <a id="footer-link" href="mailto:support@campusbooker.edu"
-        >support@campusbooker.edu</a
-      >
-    </footer>
-  </body>
 
+    </section>
+  </main>
+
+  <!-- footer -->
+  <footer class="footer-bar">
+    &copy; 2025 Campus Resource Booking System |
+    <br />
+    <a id="footer-link" href="mailto:support@campusbooker.edu">support@campusbooker.edu</a>
+  </footer>
+
+  <!--  loading resources from database -->
+  <script>
+    async function loadResources() {
+      try {
+        const res = await fetch('/api/resources');
+        const data = await res.json();
+
+        const select = document.getElementById('resourceSelect');
+
+        select.innerHTML = ""; 
+
+        //group by category
+        const categories = {};
+
+        data.forEach(item => {
+          if (!categories[item.category]) {
+            categories[item.category] = [];
+          }
+          categories[item.category].push(item);
+        });
+
+        // building dropdown
+        for (const category in categories) {
+          const optgroup = document.createElement('optgroup');
+          optgroup.label = category;
+
+          categories[category].forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r.id;
+            opt.textContent = r.name;
+            optgroup.appendChild(opt);
+          });
+
+          select.appendChild(optgroup);
+        }
+
+      } catch (err) {
+        console.error("Error loading resources:", err);
+      }
+    }
+
+    loadResources();
+  </script>
+
+</body>
 </html>
