@@ -16,6 +16,14 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for main table 'campus_bookings'
+--
+
+DROP TABLE IF EXISTS 'campus_bookings';
+CREATE TABLE 'campus_bookings';
+USE campus_booking;
+
+--
 -- Table structure for table `bookings`
 --
 
@@ -70,7 +78,10 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Test Name','test@abc.com','asdf','student'),(3,'User Two','test2@abc.com','asdf','student'),(7,'User Three','u3@abc.com','$2b$10$GVsTEy79AsneqsmQ5LD3K.cCQJbuOGRbrv9Q.FARCyqZ8g6JIVmQK','student');
+INSERT INTO `users` VALUES 
+(1,'Test Name','test@abc.com','asdf','student'),
+(3,'User Two','test2@abc.com','asdf','student'),
+(7,'User Three','u3@abc.com','$2b$10$GVsTEy79AsneqsmQ5LD3K.cCQJbuOGRbrv9Q.FARCyqZ8g6JIVmQK','student');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -85,12 +96,13 @@ UNLOCK TABLES;
 
 -- Dump completed on 2025-11-17 12:07:36
 
-CREATE TABLE resources (
-id INT AUTO_INCREMENT PRIMARY KEY,
-name VARCHAR(100) NOT NULL,
-category VARCHAR(100) NOT NULL,
-description TEXT,
-location VARCHAR(255),
-capacity INT,
-image_url VARCHAR(255)
-);
+DROP TABLE IF EXISTS `resources`
+CREATE TABLE `resources` (
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`name` VARCHAR(100) NOT NULL,
+`category` VARCHAR(100) NOT NULL,
+`description` TEXT,
+`location` VARCHAR(255),
+`capacity` INT,
+`image_url` VARCHAR(255)
+); ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

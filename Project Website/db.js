@@ -34,7 +34,7 @@ async function findUser(email, password) {
         return user;
     }
 
-    return null;
+    return null; ``
 }
 
 // ------------------------------------------------------
