@@ -84,3 +84,13 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-11-17 12:07:36
+
+CREATE TABLE resources (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+category VARCHAR(100) NOT NULL,
+description TEXT,
+location VARCHAR(255),
+capacity INT,
+image_url VARCHAR(255)
+);
