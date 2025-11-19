@@ -9,7 +9,7 @@
 --
 
 DROP DATABASE IF EXISTS `campus_bookings`;
-CREATE DATABASE `campus_bookings`;
+CREATE DATABASE `campus_booking`;
 USE campus_booking;
 
 
