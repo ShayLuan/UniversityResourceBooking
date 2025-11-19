@@ -1,27 +1,40 @@
 const express = require('express');
 const session = require('express-session');
-const { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking , getAllResources } = require('./db.js');
-const bcrypt = require("bcryptjs"); // to hash passwords
+const bcrypt = require("bcryptjs");
+
+const {
+    findUser,
+    addUser,
+    createBooking,
+    getUserBookings,
+    updateBooking,
+    deleteBooking,
+    getAllResources,
+    getBookingsByResource
+} = require('./db.js');
 
 const app = express();
 const port = 3000;
 
-app.use(express.static('public')); // make all files in the public folder accessible
-app.use(express.urlencoded({ extended: true })); // parse URL-encoded bodies
-app.use(express.json()); // parse JSON bodies
+// Middleware
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Session configuration
+// Session
 app.use(session({
     secret: 'campus-booking-secret-key-change-in-production',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
+// Home
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/Home.html');
+    res.sendFile(__dirname + '/public/Home.html');
 });
 
+// LOGIN
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -35,16 +48,14 @@ app.post('/login', async (req, res) => {
             `);
         }
 
-        // Store user in session
         req.session.userId = user.id;
         req.session.userEmail = user.email;
         req.session.userRole = user.role;
 
         if (user.role === 'admin') {
             return res.redirect('/AdminDashboard.html');
-        } else {
-            return res.redirect('/StudentDashboard.html');
         }
+        return res.redirect('/StudentDashboard.html');
 
     } catch (err) {
         console.error(err);
@@ -52,175 +63,187 @@ app.post('/login', async (req, res) => {
     }
 });
 
+/* ---------------------------------------------------
+   🔹 GET BOOKINGS BY RESOURCE (for Spotlight Calendar)
+----------------------------------------------------*/
+app.get('/api/bookings/resource/:resourceName', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
 
-//Register route (for students)
+        const resourceName = req.params.resourceName;
+        const rows = await getBookingsByResource(resourceName);
+
+        // Normalize dates → "YYYY-MM-DD"
+        const normalized = rows.map(row => {
+            let d = new Date(row.date);
+
+            if (!isNaN(d)) {
+                row.date = d.toISOString().split("T")[0];
+            }
+
+            return row;
+        });
+
+        res.json(normalized);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load resource bookings" });
+    }
+});
+
+// REGISTER
 app.post('/Register', async (req, res) => {
     const { name, email, password, 'confirm-password': confirmPassword } = req.body;
 
     try {
-        // just making sure everything is filled out
         if (!name || !email || !password || !confirmPassword) {
             return res.status(400).json({
                 error: 'missing_fields',
-                message: 'Please fill in all the fields '
+                message: 'Please fill in all the fields'
             });
         }
 
-        // check if both passwords match
         if (password !== confirmPassword) {
-            return res.status( 400).json({
+            return res.status(400).json({
                 error: 'password_mismatch',
-                message: 'Your passwords don’t match. Please double check '
+                message: 'Your passwords don’t match.'
             });
         }
 
-        //hash the password before saving it
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // add the user to the DB as a student
         await addUser(name, email, hashedPassword, 'student');
-        return res.json({ ok: true } );
 
-    }    catch (err) {
-        console.log( err);
+        res.json({ ok: true });
 
-    
-        // email already used
-        if (err.code === 'ER_DUP_ENTRY' ) {
+    } catch (err) {
+        console.log(err);
+
+        if (err.code === 'ER_DUP_ENTRY') {
             return res.status(409).json({
                 error: 'duplicate_email',
-                message: 'This email is already registered. '
+                message: 'This email is already registered.'
             });
         }
 
-        // if something unexpected went wrong , we send an error msg
-        return res.status(400).json({
+        res.status(400).json({
             error: 'unknown',
-            message: 'Something went wrong. Please try again.'
+            message: 'Something went wrong.'
         });
     }
 });
 
-// Create booking endpoint
+// CREATE BOOKING
 app.post('/api/bookings', async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.userId)
             return res.status(401).json({ error: 'Not authenticated' });
-        }
 
         const { resource, date, time, duration } = req.body;
 
-        if (!resource || !date || !time || !duration) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
+        if (!resource || !date || !time || !duration)
+            return res.status(400).json({ error: 'Missing fields' });
 
-        const bookingId = await createBooking(req.session.userId, resource, date, time, duration);
-        return res.json({ ok: true, bookingId });
+        const id = await createBooking(
+            req.session.userId,
+            resource,
+            date,
+            time,
+            duration
+        );
+
+        res.json({ ok: true, bookingId: id });
+
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Failed to create booking' });
+        res.status(500).json({ error: 'Failed to create booking' });
     }
 });
 
-// Get user bookings endpoint
+// GET USER BOOKINGS
 app.get('/api/bookings', async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.userId)
             return res.status(401).json({ error: 'Not authenticated' });
-        }
 
-        const bookings = await getUserBookings(req.session.userId);
-        
-        // okay maybe formatting the date here helps with display?
-        const formattedBookings = bookings.map(booking => {
-            const formatted = { ...booking };
-            // convert date to YYYY-MM-DD string
-            if (booking.date instanceof Date) {
-                const year = booking.date.getFullYear();
-                const month = String(booking.date.getMonth() + 1).padStart(2, '0');
-                const day = String(booking.date.getDate()).padStart(2, '0');
-                formatted.date = `${year}-${month}-${day}`;
-            } else if (typeof booking.date === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(booking.date)) {
-                const date = new Date(booking.date);
-                if (!isNaN(date.getTime())) {
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    formatted.date = `${year}-${month}-${day}`;
-                }
-            }
-            return formatted;
+        const rows = await getUserBookings(req.session.userId);
+
+        const normalized = rows.map(row => {
+            let d = new Date(row.date);
+            if (!isNaN(d)) row.date = d.toISOString().split("T")[0];
+            return row;
         });
-        
-        return res.json(formattedBookings);
+
+        res.json(normalized);
+
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Failed to fetch bookings' });
+        res.status(500).json({ error: "Failed to load your bookings" });
     }
 });
 
-// Update booking endpoint
+// UPDATE BOOKING
 app.put('/api/bookings/:id', async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.userId)
             return res.status(401).json({ error: 'Not authenticated' });
-        }
 
-        const bookingId = parseInt(req.params.id);
+        const bookingId = Number(req.params.id);
         const { resource, date, time, duration } = req.body;
 
-        if (!resource || !date || !time || !duration) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
+        const ok = await updateBooking(
+            bookingId,
+            req.session.userId,
+            resource,
+            date,
+            time,
+            duration
+        );
 
-        const updated = await updateBooking(bookingId, req.session.userId, resource, date, time, duration);
+        if (!ok) return res.status(404).json({ error: 'Booking not found' });
 
-        if (updated) {
-            return res.json({ ok: true });
-        } else {
-            return res.status(404).json({ error: 'Booking not found' });
-        }
+        res.json({ ok: true });
+
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Failed to update booking' });
+        res.status(500).json({ error: "Failed to update booking" });
     }
 });
 
-
+// DELETE BOOKING
 app.delete('/api/bookings/:id', async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.userId)
             return res.status(401).json({ error: 'Not authenticated' });
-        }
 
-        const bookingId = parseInt(req.params.id);
-        const deleted = await deleteBooking(bookingId, req.session.userId);
+        const ok = await deleteBooking(
+            Number(req.params.id),
+            req.session.userId
+        );
 
-        if (deleted) {
-            return res.json({ ok: true });
-        } else {
-            return res.status(404).json({ error: 'Booking not found' });
-        }
+        if (!ok) return res.status(404).json({ error: 'Booking not found' });
+
+        res.json({ ok: true });
+
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Failed to delete booking' });
+        res.status(500).json({ error: "Failed to delete booking" });
     }
 });
 
-
-// fetching all the resources
-app.get("/api/resources", async (req, res) => {
+// GET RESOURCES
+app.get('/api/resources', async (_req, res) => {
     try {
-        const resources = await getAllResources();
-        res.json(resources);  // sending as a JSON to the frontend
+        res.json(await getAllResources());
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to load resources" });
     }
 });
 
-
-//listening to the server
+// START SERVER
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });
