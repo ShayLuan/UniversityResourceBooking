@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Resource Spotlight</title>
 
+  <!-- google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -29,26 +30,27 @@
     </nav>
   </header>
 
+  
   <main class="container">
     <section class="layout">
 
       <!--  filtering dropdown  -->
       <aside class="filter-card">
         <label for="resourceSelect">Select a Resource</label>
+
+        
         <select id="resourceSelect" name="resource">
           <option disabled selected>Loading resources...</option>
         </select>
       </aside>
 
-      <!-- Calendar -->
+      <!-- calender -->
       <section class="calendar-card" aria-label="Calendar">
         <div class="calendar-header">
-          <button id="prevMonth">←</button>
-          <h2 id="monthLabel"></h2>
-          <button id="nextMonth">→</button>
+          <h2>October 2025</h2>
         </div>
 
-        <div class="calendar-grid" id="calendarGrid">
+        <div class="calendar-grid">
           <div class="dow">Sun</div>
           <div class="dow">Mon</div>
           <div class="dow">Tue</div>
@@ -56,21 +58,101 @@
           <div class="dow">Thu</div>
           <div class="dow">Fri</div>
           <div class="dow">Sat</div>
+
+          <div class="day empty"></div>
+          <div class="day empty"></div>
+          <div class="day">1</div>
+          <div class="day">2</div>
+          <div class="day">3</div>
+          <div class="day">4</div>
+          <div class="day">5</div>
+          <div class="day">6</div>
+          <div class="day">7</div>
+          <div class="day">8</div>
+          <div class="day">9</div>
+          <div class="day">10</div>
+          <div class="day">11</div>
+          <div class="day">12</div>
+          <div class="day">13</div>
+          <div class="day">14</div>
+          <div class="day">15</div>
+          <div class="day">16</div>
+          <div class="day today">17</div>
+          <div class="day">18</div>
+          <div class="day">19</div>
+          <div class="day">20</div>
+          <div class="day">21</div>
+          <div class="day">22</div>
+          <div class="day">23</div>
+          <div class="day">24</div>
+          <div class="day">25</div>
+          <div class="day">26</div>
+          <div class="day">27</div>
+          <div class="day">28</div>
+          <div class="day">29</div>
+          <div class="day">30</div>
+          <div class="day">31</div>
+
+          <div class="day empty"></div>
+          <div class="day empty"></div>
+          <div class="day empty"></div>
+          <div class="day empty"></div>
         </div>
       </section>
 
     </section>
   </main>
 
-  <!-- Footer -->
+  <!-- footer -->
   <footer class="footer-bar">
     &copy; 2025 Campus Resource Booking System |
     <br />
     <a id="footer-link" href="mailto:support@campusbooker.edu">support@campusbooker.edu</a>
   </footer>
 
-  <!-- External script -->
-  <script src="ResourceSpotlight.js"></script>
+  <!--  loading resources from database -->
+  <script>
+    async function loadResources() {
+      try {
+        const res = await fetch('/api/resources');
+        const data = await res.json();
+
+        const select = document.getElementById('resourceSelect');
+
+        select.innerHTML = ""; 
+
+        //group by category
+        const categories = {};
+
+        data.forEach(item => {
+          if (!categories[item.category]) {
+            categories[item.category] = [];
+          }
+          categories[item.category].push(item);
+        });
+
+        // building dropdown
+        for (const category in categories) {
+          const optgroup = document.createElement('optgroup');
+          optgroup.label = category;
+
+          categories[category].forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r.id;
+            opt.textContent = r.name;
+            optgroup.appendChild(opt);
+          });
+
+          select.appendChild(optgroup);
+        }
+
+      } catch (err) {
+        console.error("Error loading resources:", err);
+      }
+    }
+
+    loadResources();
+  </script>
 
 </body>
 </html>

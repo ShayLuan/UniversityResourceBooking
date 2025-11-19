@@ -1,141 +1,134 @@
-const mysql = require("mysql2/promise");
-const bcrypt = require("bcryptjs");
+const mysql = require('mysql2/promise');
+const bcrypt = require("bcryptjs"); // to hash passwords
 
-// ------------------------------------------------------
-// DATABASE POOL
-// ------------------------------------------------------
-const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "soen287gogo",
-    database: "campus_booking"
-});
+// credentials that we'll use for now
+// add more if needed
+const DB_HOST = 'localhost';
+const DB_USER = 'root';
+const DB_PASS = 'soen287gogo';
+const DB_NAME = 'campus_booking';
 
-// ------------------------------------------------------
-// FIND USER (LOGIN)
-// ------------------------------------------------------
+// Create database if missing
+const poolPromise = (async () => {
+    const adminConn = await mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASS
+    });
+    await adminConn.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\``);
+    await adminConn.end();
+
+    const pool = mysql.createPool({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASS,
+        database: DB_NAME,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+    });
+
+    // does schema exist?
+    await pool.query(`CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL DEFAULT 'student'
+    )`);
+
+    await pool.query(`CREATE TABLE IF NOT EXISTS bookings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        resource VARCHAR(255) NOT NULL,
+        date DATE NOT NULL,
+        time VARCHAR(50) NOT NULL,
+        duration INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`);
+
+    // ✅ ADD RESOURCES TABLE HERE (INSIDE async)
+    await pool.query(`CREATE TABLE IF NOT EXISTS resources (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        category VARCHAR(100) NOT NULL,
+        description TEXT,
+        location VARCHAR(255),
+        capacity INT,
+        image_url VARCHAR(500)
+    )`);
+
+    return pool;
+})();
+
+// ------------ FUNCTIONS ------------
+
 async function findUser(email, password) {
+    const pool = await poolPromise;
+
     const [rows] = await pool.query(
-        "SELECT * FROM users WHERE email = ?",
+        "SELECT * FROM users WHERE email = ? LIMIT 1",
         [email]
     );
-
-    if (rows.length === 0) return null;
     const user = rows[0];
+    if (!user) return null;
 
-    // HASHED PASSWORD CASE (normal bcrypt)
-    if (user.password.startsWith("$2")) {
-        const match = await bcrypt.compare(password, user.password);
-        return match ? user : null;
-    }
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return null;
 
-    // LEGACY PLAINTEXT PASSWORD SUPPORT
-    if (password === user.password) {
-        return user;
-    }
-
-    return null;
+    return user;
 }
 
-// ------------------------------------------------------
-// ADD USER (REGISTER)
-// ------------------------------------------------------
-async function addUser(name, email, hashedPassword, role = "student") {
+async function addUser(name, email, password, role = 'student') {
+    const pool = await poolPromise;
     const [result] = await pool.query(
         "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-        [name, email, hashedPassword, role]
+        [name, email, password, role]
     );
-
     return result.insertId;
 }
 
-// ------------------------------------------------------
-// CREATE BOOKING
-// ------------------------------------------------------
 async function createBooking(userId, resource, date, time, duration) {
+    const pool = await poolPromise;
     const [result] = await pool.query(
-        `INSERT INTO bookings (user_id, resource, date, time, duration)
-         VALUES (?, ?, ?, ?, ?)`,
+        "INSERT INTO bookings (user_id, resource, date, time, duration) VALUES (?, ?, ?, ?, ?)",
         [userId, resource, date, time, duration]
     );
-
     return result.insertId;
 }
 
-// ------------------------------------------------------
-// GET BOOKINGS FOR LOGGED-IN USER
-// ------------------------------------------------------
 async function getUserBookings(userId) {
+    const pool = await poolPromise;
     const [rows] = await pool.query(
-        "SELECT * FROM bookings WHERE user_id = ? ORDER BY date DESC",
+        "SELECT * FROM bookings WHERE user_id = ? ORDER BY date ASC, time ASC",
         [userId]
     );
     return rows;
 }
 
-// ------------------------------------------------------
-// UPDATE BOOKING
-// ------------------------------------------------------
-async function updateBooking(id, userId, resource, date, time, duration) {
+async function updateBooking(bookingId, userId, resource, date, time, duration) {
+    const pool = await poolPromise;
     const [result] = await pool.query(
-        `UPDATE bookings
-         SET resource = ?, date = ?, time = ?, duration = ?
-         WHERE id = ? AND user_id = ?`,
-        [resource, date, time, duration, id, userId]
+        "UPDATE bookings SET resource = ?, date = ?, time = ?, duration = ? WHERE id = ? AND user_id = ?",
+        [resource, date, time, duration, bookingId, userId]
     );
-
     return result.affectedRows > 0;
 }
 
-// ------------------------------------------------------
-// GET BOOKINGS FOR A RESOURCE (CALENDAR USES THIS)
-// ------------------------------------------------------
-async function getBookingsByResource(resourceName) {
-    const [rows] = await pool.query(
-        `SELECT id, user_id, resource, date, time, duration
-         FROM bookings
-         WHERE resource = ?`,
-        [resourceName]
+async function deleteBooking(bookingId, userId) {
+    const pool = await poolPromise;
+    const [result] = await pool.query(
+        "DELETE FROM bookings WHERE id = ? AND user_id = ?",
+        [bookingId, userId]
     );
+    return result.affectedRows > 0;
+}
 
+async function getAllResources() {
+    const pool = await poolPromise;
+    const [rows] = await pool.query("SELECT * FROM resources ORDER BY category, name");
     return rows;
 }
 
-// ------------------------------------------------------
-// DELETE BOOKING
-// ------------------------------------------------------
-async function deleteBooking(id, userId) {
-    const [result] = await pool.query(
-        "DELETE FROM bookings WHERE id = ? AND user_id = ?",
-        [id, userId]
-    );
-
-    return result.affectedRows > 0;
-}
-
-// ------------------------------------------------------
-// GET ALL RESOURCES
-// ------------------------------------------------------
-async function getAllResources() {
-    return [
-        { id: 1, name: "study-rooms", category: "Study Spaces" },
-        { id: 2, name: "computer-labs", category: "Labs" },
-        { id: 3, name: "sports-facilities", category: "Athletics" },
-        { id: 4, name: "event-spaces", category: "Events" },
-        { id: 5, name: "library-resources", category: "Library" }
-    ];
-}
-
-// ------------------------------------------------------
-// EXPORTS
-// ------------------------------------------------------
-module.exports = {
-    findUser,
-    addUser,
-    createBooking,
-    getUserBookings,
-    updateBooking,
-    deleteBooking,
-    getAllResources,
-    getBookingsByResource
-};
+module.exports = { findUser, addUser, createBooking, getUserBookings, updateBooking, deleteBooking , getAllResources };

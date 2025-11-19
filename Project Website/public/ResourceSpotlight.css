@@ -1,44 +1,43 @@
-/* ----------------------------------------
-   GLOBAL RESET & LAYOUT
----------------------------------------- */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html, body { overflow-x: hidden; }
 html, body {
   height: 100%;
-  overflow-x: hidden;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  font-family: 'Exo 2', sans-serif;
-  background: url('sourcePics/UW-Paccar-Hall_Cover-jpg.webp') 
-              no-repeat center center fixed;
-  background-size: cover;
-  color: #132a13;
 }
-
 main {
   flex: 1;
 }
-
 footer {
   margin-top: auto;
 }
 
-/* White overlay */
+body {
+  font-family: 'Exo 2', sans-serif;
+  min-height: 100vh;
+  background: url('sourcePics/UW-Paccar-Hall_Cover-jpg.webp') no-repeat center center fixed;
+  background-size: cover;
+  color: #132a13;
+}
+
 .spotlight::before {
-  content: "";
+  content: '';
   position: fixed;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.55);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.575);
   z-index: -1;
 }
 
-/* ----------------------------------------
-   NAVIGATION
----------------------------------------- */
+/* Header (match resources page) */
 .nav_bar_resources nav {
   display: flex;
   justify-content: space-between;
@@ -47,35 +46,37 @@ footer {
   background-color: #ecf39e;
   border-bottom: 1px solid #cdcccf;
   position: fixed;
-  top: 0;
   width: 100%;
+  top: 0;
   z-index: 1000;
+  flex-wrap: wrap;
 }
 
-.nav-left, .nav-right {
-  display: flex;
-  gap: 20px;
-}
-
+.nav-left, .nav-right { display: flex; gap: 20px; }
 .nav_bar_resources nav a {
   text-decoration: none;
   color: #132a13;
   font-weight: 600;
-  font-size: 1.15rem;
-  transition: 0.3s ease;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
 }
-
 .nav_bar_resources nav a:hover,
-.nav_bar_resources nav a:focus {
-  color: #90a955;
-}
+.nav_bar_resources nav a:focus { color: #90a955; }
 
-/* ----------------------------------------
-   PAGE STRUCTURE
----------------------------------------- */
+/* Page container */
 .container {
   padding: 32px 24px;
-  margin-top: 90px;
+  margin-top: 72px;
+}
+
+.page-header h1 { font-size: 2.1rem; margin: 0 0 8px 0; }
+.page-header .subtitle {
+  background: #ecf39e;
+  color: #132a13;
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 0 0 20px 0;
 }
 
 .layout {
@@ -84,201 +85,86 @@ footer {
   gap: 24px;
 }
 
-/* Cards */
 .filter-card, .calendar-card {
   background: #ecf39e;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 17px rgba(0, 0, 0, 0.08);
 }
 
-/* ----------------------------------------
-   DROPDOWN
----------------------------------------- */
-.filter-card label {
-  font-weight: 700;
-  margin-bottom: 8px;
-  display: block;
-  font-size: 1.05rem;
-}
-
+.filter-card label { display: block; font-weight: 700; margin-bottom: 8px; }
 .filter-card select {
   width: 100%;
   padding: 12px;
-  border-radius: 10px;
-  border: 2px solid #90a955;
-  font-size: 1rem;
-  background: #fff;
-  transition: 0.2s ease;
-}
-
-.filter-card select:hover,
-.filter-card select:focus {
-  border-color: #4f772d;
-}
-
-/* ----------------------------------------
-   CALENDAR STRUCTURE
----------------------------------------- */
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.calendar-header h2 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #132a13;
-}
-
-.calendar-header button {
-  background: #4f772d;
-  color: white;
-  border: none;
-  padding: 8px 14px;
+  border: 1px solid #90a955;
   border-radius: 8px;
   font-size: 1rem;
-  cursor: pointer;
-  transition: 0.25s ease;
-  font-weight: 600;
+  background: #fff;
 }
+.filter-card .hint { color: #31572c; margin: 10px 0 14px 0; }
 
-.calendar-header button:hover {
-  background: #90a955;
+.button {
+  display: inline-block;
+  background: #4f772d;
+  color: #ecf39e;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
 }
+.button:hover, .button:focus { background: #90a955; color: #132a13; }
 
-/* Calendar grid */
+/* Calendar */
+.calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.calendar-header h2 { font-size: 1.25rem; margin: 0; }
+
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
-/* Day-of-week labels */
-.dow {
-  font-weight: 700;
-  text-align: center;
-  color: #31572c;
-  padding-bottom: 6px;
-  font-size: 1rem;
-}
-
-/* Individual day cells */
+.dow { font-weight: 700; text-align: center; color: #31572c; }
 .day {
-  background: #ffffff;
-  border-radius: 12px;
-  min-height: 80px;
-  padding: 10px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  min-height: 64px;
+  padding: 8px;
   text-align: right;
-  position: relative;
   color: #132a13;
-  font-size: 1.05rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  transition: all 0.2s ease-in-out;
 }
+.day.today { outline: 2px solid #4f772d; }
+.day.empty { background: transparent; border-color: transparent; }
 
-/* Hover effect */
-.day:not(.empty):hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-}
-
-.day.empty {
-  background: transparent;
-  border: none;
-}
-
-/* Today highlight */
-.day.today {
-  outline: 3px solid #4f772d;
-  outline-offset: 2px;
-  font-weight: 700;
-}
-
-/* ----------------------------------------
- /* BOOKED DAYS – LIGHT (less than 3 hours) */
-.day.booked-light {
-  background: #ffd166 !important;   /* warm yellow */
-  color: #222 !important;
-  font-weight: 700;
-  border: none;
-  box-shadow: 0 3px 10px rgba(255, 209, 102, 0.6);
-  transform: scale(1.02);
-}
-
-/* BOOKED DAYS – HEAVY (3 hours or more) */
-.day.booked-heavy {
-  background: #d9534f !important;   /* strong red */
-  color: #fff !important;
-  font-weight: 700;
-  border: none;
-  box-shadow: 0 3px 12px rgba(217, 83, 79, 0.5);
-  transform: scale(1.02);
-}
-
-.day.booked-heavy:hover,
-.day.booked-light:hover {
-  transform: scale(1.05);
-}
-
-/* Tooltip stays the same */
-.tooltip {
-  display: none;
-  position: absolute;
-  top: 85%;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 8px 12px;
-  background: #222;
-  color: white;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  z-index: 20;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-}
-
-.day.has-tooltip:hover .tooltip {
-  display: block;
-}
-
-
-/* ----------------------------------------
-   RESPONSIVE DESIGN
----------------------------------------- */
 @media (max-width: 900px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
+  .layout { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 640px) {
+  .nav-left, .nav-right { gap: 12px; }
   .nav_bar_resources nav a { font-size: 1rem; }
-  .calendar-header h2 { font-size: 1.3rem; }
+  .container { margin-top: 96px; }
 }
 
 @media (max-width: 420px) {
-  .calendar-header button {
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
+  .nav-left, .nav-right { width: 100%; }
+  .nav-right { justify-content: flex-end; }
+  .container { margin-top: 120px; }
 }
 
-/* ----------------------------------------
-   FOOTER
----------------------------------------- */
+
 footer {
   background: #a7c957;
   padding: 1.2em 2em;
+  font-family: inherit;
   font-size: 1em;
   color: #222;
   border-top: 1px solid #222;
   text-align: center;
 }
 
-#footer-link:hover {
+#footer-link:hover,
+#footer-link:focus {
   color: #ecf39e;
 }
