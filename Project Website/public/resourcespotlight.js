@@ -9,6 +9,14 @@ let currentDate = new Date();
 // [{ id, user_id, resource, date, time, duration }]
 let bookings = [];
 
+// added this to format the dropdown properly
+function formatResourceName(name) {
+    return name
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
+
 // --------------------------------------------------------
 // LOAD RESOURCES
 // --------------------------------------------------------
@@ -22,8 +30,8 @@ async function loadResources() {
 
         list.forEach(r => {
             const opt = document.createElement("option");
-            opt.value = r.name;       // matches DB "resource" column (e.g., "event-spaces")
-            opt.textContent = r.name; // label shown to user
+            opt.value = r.name;       
+            opt.textContent = formatResourceName(r.name); // i formatted dispplay cuz otherwise it's an ugly name
             select.appendChild(opt);
         });
 

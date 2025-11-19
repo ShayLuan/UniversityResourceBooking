@@ -5,6 +5,10 @@ const bcrypt = require("bcryptjs");
 const {
     findUser,
     addUser,
+    getUserById,
+    verifyPassword,
+    updateUserPassword,
+    updateUserInfo,
     createBooking,
     getUserBookings,
     updateBooking,
@@ -230,6 +234,130 @@ app.delete('/api/bookings/:id', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to delete booking" });
+    }
+});
+
+// get current user's data
+app.get('/api/user', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Return only safe user data (no password)
+        res.json({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            phone: user.phone || null,
+            address: user.address || null
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load user data" });
+    }
+});
+
+// verify current pw
+app.post('/api/user/verify-password', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const { password } = req.body;
+
+        if (!password) {
+            return res.status(400).json({ error: 'Password is required' });
+        }
+
+        const isValid = await verifyPassword(req.session.userId, password);
+        res.json({ valid: isValid });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to verify password" });
+    }
+});
+
+// update user data 
+app.put('/api/user', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const { name, email, phone, address } = req.body;
+        const updates = {};
+
+        if (name !== undefined) updates.name = name;
+        if (email !== undefined) updates.email = email;
+        if (phone !== undefined) updates.phone = phone;
+        if (address !== undefined) updates.address = address;
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ error: 'No fields to update' });
+        }
+
+        // check email if updated
+        if (email !== undefined && !email.trim()) {
+            return res.status(400).json({ error: 'Email cannot be empty' });
+        }
+
+        const result = await updateUserInfo(req.session.userId, updates);
+
+        if (!result.success) {
+            return res.status(400).json({ error: result.error || 'Failed to update user info' });
+        }
+
+        // gotta keep up with session email if changed
+        if (email !== undefined) {
+            req.session.userEmail = email;
+        }
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to update user info" });
+    }
+});
+
+// update pw
+app.put('/api/user/password', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({ error: 'All password fields are required' });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ error: 'New password and confirmation do not match' });
+        }
+
+        const result = await updateUserPassword(
+            req.session.userId,
+            currentPassword,
+            newPassword
+        );
+
+        if (!result.success) {
+            return res.status(400).json({ error: result.error || 'Failed to update password' });
+        }
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to update password" });
     }
 });
 

@@ -24,7 +24,7 @@
     <a href="Login.html" class="sidebar-link"><span>🚪</span> Log out</a>
   </nav>
   <div class="main">
-    <h1>Welcome, Dear Student!</h1>
+    <h1 id="welcome-message">Welcome, Dear Student!</h1>
     <div class="card-grid">
       <a href="ResourceSpotlight.html" class="card-link">
         <div class="card">
@@ -74,8 +74,37 @@
     </div>
   </div>
   <script>
-    document.getElementById('booking-history').addEventListener('click', function () {
-      window.open('BookingHistory.html', '_blank', 'width=900,height=600');
+    // load user name and update welcome message
+    async function loadUserName() {
+      try {
+        const res = await fetch("/api/user", { credentials: "include" });
+        if (!res.ok) {
+          console.error("Failed to load user data");
+          return;
+        }
+        
+        const user = await res.json();
+        if (user.name) {
+          // just keep the first word for the msg
+          const firstName = user.name.split(' ')[0];
+          const welcomeElement = document.getElementById("welcome-message");
+          if (welcomeElement) {
+            welcomeElement.textContent = `Welcome, ${firstName}!`;
+          }
+        }
+      } catch (err) {
+        console.error("Error loading user data:", err);
+      }
+    }
+
+    // Load user name when page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      loadUserName();
+      
+      // Booking history click handler
+      document.getElementById('booking-history').addEventListener('click', function () {
+        window.open('BookingHistory.html', '_blank', 'width=900,height=600');
+      });
     });
   </script>
 </body>
