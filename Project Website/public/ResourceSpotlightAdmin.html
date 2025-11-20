@@ -4,74 +4,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Resource Spotlight Admin</title>
+  <title>Resource Spotlight (Admin)</title>
+
   <link rel="stylesheet" href="ResourceSpotlight.css" />
 </head>
 
 <body class="spotlight">
+
+  <!-- Navbar -->
   <header class="nav_bar_resources">
     <nav>
       <div class="nav-left">
-        <a href="adminDash.html">Dashboard</a>
+        <a href="AdminDashboard.html">Dashboard</a>
       </div>
-      <div class="nav-right"> <a href="booking-form.html">Book</a>
+      <div class="nav-right">
+        <a href="booking-form.html">Book</a>
       </div>
     </nav>
   </header>
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Resource Spotlight</title>
-    <link rel="stylesheet" href="ResourceSpotlight.css" />
-  </head>
+  <main class="container">
+    <section class="layout">
 
-  <body>
-    <header class="nav_bar_resources">
-      <nav>
-        <div class="nav-left">
-          <a href="AdminDashboard.html">Dashboard</a>
-          <a href="booking-form.html">Book</a>
-        </div>
-      </nav>
-    </header>
-
-    <main class="container" <section class="layout">
+      <!-- Filtering dropdown -->
       <aside class="filter-card">
         <label for="resourceSelect">Select a Resource</label>
         <select id="resourceSelect" name="resource">
-          <optgroup label="Study Rooms">
-            <option>Study Room A</option>
-            <option>Study Room B</option>
-            <option>Study Room C</option>
-          </optgroup>
-          <optgroup label="Computer Labs">
-            <option>Computer Lab 1</option>
-            <option>Computer Lab 2</option>
-            <option>Computer Lab 3</option>
-          </optgroup>
-          <optgroup label="Gyms & Sports">
-            <option>Gymnasium</option>
-            <option>Fitness Center</option>
-            <option>Indoor Court</option>
-          </optgroup>
-          <optgroup label="Event Spaces">
-            <option>Event Space A</option>
-            <option>Event Space B</option>
-          </optgroup>
-          <optgroup label="Library Resources">
-            <option>Library Study Pods</option>
-            <option>Media Room</option>
-            <option>Quiet Reading Room</option>
-          </optgroup>
+          <option value="" selected>Loading resources...</option>
         </select>
       </aside>
 
+      <!-- Dynamic Calendar -->
       <section class="calendar-card" aria-label="Calendar">
         <div class="calendar-header">
-          <h2>October 2025</h2>
+          <button id="prevMonth">←</button>
+          <h2 id="monthLabel"></h2>
+          <button id="nextMonth">→</button>
         </div>
-        <div class="calendar-grid">
+
+        <div class="calendar-grid" id="calendarGrid">
           <div class="dow">Sun</div>
           <div class="dow">Mon</div>
           <div class="dow">Tue</div>
@@ -79,56 +50,22 @@
           <div class="dow">Thu</div>
           <div class="dow">Fri</div>
           <div class="dow">Sat</div>
-
-          <div class="day empty"></div>
-          <div class="day empty"></div>
-          <div class="day">1</div>
-          <div class="day">2</div>
-          <div class="day">3</div>
-          <div class="day">4</div>
-          <div class="day">5</div>
-          <div class="day">6</div>
-          <div class="day">7</div>
-          <div class="day">8</div>
-          <div class="day">9</div>
-          <div class="day">10</div>
-          <div class="day">11</div>
-          <div class="day">12</div>
-          <div class="day">13</div>
-          <div class="day">14</div>
-          <div class="day">15</div>
-          <div class="day">16</div>
-          <div class="day today">17</div>
-          <div class="day">18</div>
-          <div class="day">19</div>
-          <div class="day">20</div>
-          <div class="day">21</div>
-          <div class="day">22</div>
-          <div class="day">23</div>
-          <div class="day">24</div>
-          <div class="day">25</div>
-          <div class="day">26</div>
-          <div class="day">27</div>
-          <div class="day">28</div>
-          <div class="day">29</div>
-          <div class="day">30</div>
-          <div class="day">31</div>
-          <div class="day empty"></div>
-          <div class="day empty"></div>
-          <div class="day empty"></div>
-          <div class="day empty"></div>
+          <!-- Days will be inserted here dynamically -->
         </div>
       </section>
-      </section>
-    </main>
-        
-    <footer class="footer-bar">
-      &copy; 2025 Campus Resource Booking System | Contact:
-      <br \ />
-      <a id="footer-link" href="mailto:support@campusbooker.edu"
-        >support@campusbooker.edu</a
-      >
-    </footer>
-  </body>
+
+    </section>
+  </main>
+
+  <footer class="footer-bar">
+    &copy; 2025 Campus Resource Booking System |
+    <br />
+    <a id="footer-link" href="mailto:support@campusbooker.edu">support@campusbooker.edu</a>
+  </footer>
+
+  <!-- Spotlight JS (correct lowercase filename) -->
+  <script src="resourcespotlight.js"></script>
+
+</body>
 
 </html>

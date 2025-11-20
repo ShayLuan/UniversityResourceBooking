@@ -6,6 +6,40 @@ flatpickr("#date", {
 });
 
 
+// ==============================================
+// LOAD REAL RESOURCES FROM THE DATABASE
+// ==============================================
+async function loadResources() {
+    const select = document.getElementById("resource");
+    select.innerHTML = `<option value="">Loading...</option>`;
+
+    try {
+        const res = await fetch("/api/resources");
+        const resources = await res.json();
+
+        // Clear dropdown
+        select.innerHTML = `<option value="">Choose a resource...</option>`;
+
+        // Add each resource ( using real DB names)
+        resources.forEach(r => {
+            const opt = document.createElement("option");
+            opt.value = r.name;        //saves real name
+            opt.textContent = r.name;  //displays real name
+            select.appendChild(opt);
+        });
+
+    } catch (err) {
+        console.error("Failed to load resources:", err);
+        select.innerHTML = `<option value="">Error loading resources</option>`;
+    }
+}
+
+// Call immediately
+loadResources();
+
+
+
+
 // let's forget about the hardcoded times
 function generateTimeSlots() {
     const times = [];
