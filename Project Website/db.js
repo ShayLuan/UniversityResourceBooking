@@ -34,7 +34,7 @@ async function findUser(email, password) {
         return user;
     }
 
-    return null; ``
+    return null;
 }
 
 // ------------------------------------------------------
@@ -47,6 +47,27 @@ async function addUser(name, email, hashedPassword, role = "student") {
     );
 
     return result.insertId;
+}
+// ------------------------------------------------------
+// FIND USER BY EMAIL (FOR FORGOT PASSWORD FLOW)
+// ------------------------------------------------------
+async function findUserByEmail(email) {
+    const [rows] = await pool.query(
+        "SELECT id, email FROM users WHERE email = ?",
+        [email]
+    );
+    return rows.length > 0 ? rows[0] : null;
+}
+
+// ------------------------------------------------------
+// RESET USER PASSWORD (NO CURRENT PASSWORD REQUIRED)
+// ------------------------------------------------------
+async function resetUserPassword(userId, hashedPassword) {
+    const [result] = await pool.query(
+        "UPDATE users SET password = ? WHERE id = ?",
+        [hashedPassword, userId]
+    );
+    return result.affectedRows > 0;
 }
 
 // ------------------------------------------------------
@@ -277,5 +298,7 @@ module.exports = {
     updateBooking,
     deleteBooking,
     getAllResources,
-    getBookingsByResource
+    getBookingsByResource,
+    findUserByEmail,
+    resetUserPassword
 };

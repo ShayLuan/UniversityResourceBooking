@@ -14,7 +14,9 @@ const {
     updateBooking,
     deleteBooking,
     getAllResources,
-    getBookingsByResource
+    getBookingsByResource,
+    findUserByEmail,
+    resetUserPassword
 } = require('./db.js');
 
 const app = express();
@@ -67,8 +69,185 @@ app.post('/login', async (req, res) => {
     }
 });
 
+
+// --------------------------------------------------
+// FORGOT PASSWORD — STEP 1: SUBMIT EMAIL
+// --------------------------------------------------
+app.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).send(`
+            <h1>Error</h1>
+            <p>Email is required. <a href="/ForgotPassword.html">Try again</a></p>
+        `);
+    }
+
+    try {
+        const user = await findUserByEmail(email);
+
+        if (!user) {
+            return res.status(404).send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Reset Ready</title>
+
+  <!-- Use your existing styles -->
+  <link rel="stylesheet" href="/ForgotPassword.css" />
+</head>
+
+<body class="forgotpw">
+
+  <header class="nav_bar">
+    <nav>
+      <a href="/Home.html">Home</a>
+      <a href="/Resources.html">Resources</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="resetpw-frame">
+      <h1>No account found</h1>
+      <p>There is no account linked to this email.</p>
+
+      <p><a href="/ForgotPassword.html" class="button">Try Again</a></p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Campus Resource Booking System | Contact:
+    <br />
+    <a id="footer-link" href="mailto:support@campusbooker.edu">
+      support@campusbooker.edu
+    </a>
+  </footer>
+
+</body>
+</html>
+`);
+        }
+
+        req.session.resetUserId = user.id;
+
+        res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Reset Ready</title>
+
+  <!-- Use your existing styles -->
+  <link rel="stylesheet" href="/ForgotPassword.css" />
+</head>
+
+<body class="forgotpw">
+
+  <header class="nav_bar">
+    <nav>
+      <a href="/Home.html">Home</a>
+      <a href="/Resources.html">Resources</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="resetpw-frame">
+      <h1>Password Reset Ready</h1>
+      <p>Your account has been located. You can now choose a new password.</p>
+
+      <p><a href="/ResetPassword.html" class="button">Continue</a></p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Campus Resource Booking System | Contact:
+    <br />
+    <a id="footer-link" href="mailto:support@campusbooker.edu">
+      support@campusbooker.edu
+    </a>
+  </footer>
+
+</body>
+</html>
+`);
+
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(`
+            <h1>Server error</h1>
+            <p>Something went wrong. Please try again later.</p>
+        `);
+    }
+});
+
+
+// --------------------------------------------------
+// FORGOT PASSWORD — STEP 2: SET NEW PASSWORD
+// --------------------------------------------------
+app.post('/reset-password', async (req, res) => {
+    const { newPassword, confirmPassword } = req.body;
+    const userId = req.session.resetUserId;
+
+    if (!userId) {
+        return res.status(400).send(`
+            <h1>Reset expired</h1>
+            <p>
+                Your reset session has expired.
+                <br><br>
+                <a href="/ForgotPassword.html">Start over</a>
+            </p>
+        `);
+    }
+
+    if (!newPassword || !confirmPassword) {
+        return res.status(400).send(`
+            <h1>Error</h1>
+            <p>All fields are required. <a href="/ResetPassword.html">Try again</a></p>
+        `);
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).send(`
+            <h1>Error</h1>
+            <p>Passwords do not match. <a href="/ResetPassword.html">Try again</a></p>
+        `);
+    }
+
+    try {
+        const hashed = await bcrypt.hash(newPassword, 10);
+        const ok = await resetUserPassword(userId, hashed);
+
+        delete req.session.resetUserId;
+
+        if (!ok) {
+            return res.status(500).send(`
+                <h1>Error</h1>
+                <p>Could not update password. Please try again.</p>
+            `);
+        }
+
+        res.send(`
+            <h1>Password updated</h1>
+            <p>Your password was changed successfully.</p>
+            <p><a href="/Login.html">Go to Login</a></p>
+        `);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(`
+            <h1>Server error</h1>
+            <p>Something went wrong. Please try again later.</p>
+        `);
+    }
+});
+
+
 /* ---------------------------------------------------
-   🔹 GET BOOKINGS BY RESOURCE (for Spotlight Calendar)
+   GET BOOKINGS BY RESOURCE
 ----------------------------------------------------*/
 app.get('/api/bookings/resource/:resourceName', async (req, res) => {
     try {
@@ -79,14 +258,9 @@ app.get('/api/bookings/resource/:resourceName', async (req, res) => {
         const resourceName = req.params.resourceName;
         const rows = await getBookingsByResource(resourceName);
 
-        // Normalize dates → "YYYY-MM-DD"
         const normalized = rows.map(row => {
             let d = new Date(row.date);
-
-            if (!isNaN(d)) {
-                row.date = d.toISOString().split("T")[0];
-            }
-
+            if (!isNaN(d)) row.date = d.toISOString().split("T")[0];
             return row;
         });
 
@@ -237,7 +411,7 @@ app.delete('/api/bookings/:id', async (req, res) => {
     }
 });
 
-// get current user's data
+// USER PROFILE
 app.get('/api/user', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -249,7 +423,6 @@ app.get('/api/user', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Return only safe user data (no password)
         res.json({
             id: user.id,
             name: user.name,
@@ -264,7 +437,7 @@ app.get('/api/user', async (req, res) => {
     }
 });
 
-// verify current pw
+// VERIFY PASSWORD
 app.post('/api/user/verify-password', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -285,7 +458,7 @@ app.post('/api/user/verify-password', async (req, res) => {
     }
 });
 
-// update user data 
+// UPDATE USER INFO
 app.put('/api/user', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -304,7 +477,6 @@ app.put('/api/user', async (req, res) => {
             return res.status(400).json({ error: 'No fields to update' });
         }
 
-        // check email if updated
         if (email !== undefined && !email.trim()) {
             return res.status(400).json({ error: 'Email cannot be empty' });
         }
@@ -315,7 +487,6 @@ app.put('/api/user', async (req, res) => {
             return res.status(400).json({ error: result.error || 'Failed to update user info' });
         }
 
-        // gotta keep up with session email if changed
         if (email !== undefined) {
             req.session.userEmail = email;
         }
@@ -327,7 +498,7 @@ app.put('/api/user', async (req, res) => {
     }
 });
 
-// update pw
+// UPDATE PASSWORD
 app.put('/api/user/password', async (req, res) => {
     try {
         if (!req.session.userId) {
