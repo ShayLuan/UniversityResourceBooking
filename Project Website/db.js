@@ -22,14 +22,14 @@ async function findUser(email, password) {
 
     if (rows.length === 0) return null;
     const user = rows[0];
-
-    // HASHED PASSWORD CASE (normal bcrypt)
+// ------------------------------------------------------
+// HASHED PASSWORD CASE (normal bcrypt)
     if (user.password.startsWith("$2")) {
         const match = await bcrypt.compare(password, user.password);
         return match ? user : null;
     }
 
-    // LEGACY PLAINTEXT PASSWORD SUPPORT
+    //  PLAINTEXT PASSWORD SUPPORT
     if (password === user.password) {
         return user;
     }
@@ -254,17 +254,13 @@ async function updateUserPassword(userId, currentPassword, newPassword) {
 }
 
 // ------------------------------------------------------
-// GET ALL RESOURCES
+// GET ALL RESOURCES (REAL DB VERSION)
 // ------------------------------------------------------
 async function getAllResources() {
-    return [
-        { id: 1, name: "study-rooms", category: "Study Spaces" },
-        { id: 2, name: "computer-labs", category: "Labs" },
-        { id: 3, name: "sports-facilities", category: "Athletics" },
-        { id: 4, name: "event-spaces", category: "Events" },
-        { id: 5, name: "library-resources", category: "Library" }
-    ];
+    const [rows] = await pool.query("SELECT * FROM resources");
+    return rows;
 }
+
 
 // ------------------------------------------------------
 // EXPORTS
