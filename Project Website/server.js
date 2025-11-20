@@ -80,14 +80,9 @@ app.get('/api/bookings/resource/:resourceName', async (req, res) => {
         const resourceName = req.params.resourceName;
         const rows = await getBookingsByResource(resourceName);
 
-        // Normalize dates → "YYYY-MM-DD"
         const normalized = rows.map(row => {
             let d = new Date(row.date);
-
-            if (!isNaN(d)) {
-                row.date = d.toISOString().split("T")[0];
-            }
-
+            if (!isNaN(d)) row.date = d.toISOString().split("T")[0];
             return row;
         });
 
@@ -286,7 +281,6 @@ app.get('/api/user', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Return only safe user data (no password)
         res.json({
             id: user.id,
             name: user.name,
@@ -301,7 +295,7 @@ app.get('/api/user', async (req, res) => {
     }
 });
 
-// verify current pw
+// VERIFY PASSWORD
 app.post('/api/user/verify-password', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -322,7 +316,7 @@ app.post('/api/user/verify-password', async (req, res) => {
     }
 });
 
-// update user data 
+// UPDATE USER INFO
 app.put('/api/user', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -341,7 +335,6 @@ app.put('/api/user', async (req, res) => {
             return res.status(400).json({ error: 'No fields to update' });
         }
 
-        // check email if updated
         if (email !== undefined && !email.trim()) {
             return res.status(400).json({ error: 'Email cannot be empty' });
         }
@@ -352,7 +345,6 @@ app.put('/api/user', async (req, res) => {
             return res.status(400).json({ error: result.error || 'Failed to update user info' });
         }
 
-        // gotta keep up with session email if changed
         if (email !== undefined) {
             req.session.userEmail = email;
         }
@@ -364,7 +356,7 @@ app.put('/api/user', async (req, res) => {
     }
 });
 
-// update pw
+// UPDATE PASSWORD
 app.put('/api/user/password', async (req, res) => {
     try {
         if (!req.session.userId) {
