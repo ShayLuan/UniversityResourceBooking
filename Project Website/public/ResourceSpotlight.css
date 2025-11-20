@@ -7,14 +7,14 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   font-family: 'Exo 2', sans-serif;
-  background: url('sourcePics/UW-Paccar-Hall_Cover-jpg.webp') 
-              no-repeat center center fixed;
+  background: url('sourcePics/UW-Paccar-Hall_Cover-jpg.webp') no-repeat center center fixed;
   background-size: cover;
   color: #132a13;
 }
@@ -52,7 +52,8 @@ footer {
   z-index: 1000;
 }
 
-.nav-left, .nav-right {
+.nav-left,
+.nav-right {
   display: flex;
   gap: 20px;
 }
@@ -85,7 +86,8 @@ footer {
 }
 
 /* Cards */
-.filter-card, .calendar-card {
+.filter-card,
+.calendar-card {
   background: #ecf39e;
   border-radius: 20px;
   padding: 24px;
@@ -177,6 +179,7 @@ footer {
   font-size: 1.05rem;
   border: 1px solid rgba(0, 0, 0, 0.08);
   transition: all 0.2s ease-in-out;
+  overflow: visible;
 }
 
 /* Hover effect */
@@ -201,7 +204,8 @@ footer {
 /* ----------------------------------------
  /* BOOKED DAYS – LIGHT (less than 3 hours) */
 .day.booked-light {
-  background: #ffd166 !important;   /* warm yellow */
+  background: #ffd166 !important;
+  /* warm yellow */
   color: #222 !important;
   font-weight: 700;
   border: none;
@@ -211,7 +215,8 @@ footer {
 
 /* BOOKED DAYS – HEAVY (3 hours or more) */
 .day.booked-heavy {
-  background: #d9534f !important;   /* strong red */
+  background: #d9534f !important;
+  /* strong red */
   color: #fff !important;
   font-weight: 700;
   border: none;
@@ -228,7 +233,8 @@ footer {
 .tooltip {
   display: none;
   position: absolute;
-  top: 85%;
+  bottom: 100%;
+  top: auto;
   left: 50%;
   transform: translateX(-50%);
   padding: 8px 12px;
@@ -238,7 +244,7 @@ footer {
   font-size: 0.85rem;
   white-space: nowrap;
   z-index: 20;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .day.has-tooltip:hover .tooltip {
@@ -256,8 +262,13 @@ footer {
 }
 
 @media (max-width: 640px) {
-  .nav_bar_resources nav a { font-size: 1rem; }
-  .calendar-header h2 { font-size: 1.3rem; }
+  .nav_bar_resources nav a {
+    font-size: 1rem;
+  }
+
+  .calendar-header h2 {
+    font-size: 1.3rem;
+  }
 }
 
 @media (max-width: 420px) {
