@@ -14,7 +14,9 @@ const {
     updateBooking,
     deleteBooking,
     getAllResources,
-    getBookingsByResource
+    getBookingsByResource,
+    getPastBookings,
+    getUpcomingBookings
 } = require('./db.js');
 
 const app = express();
@@ -67,9 +69,8 @@ app.post('/login', async (req, res) => {
     }
 });
 
-/* ---------------------------------------------------
-   🔹 GET BOOKINGS BY RESOURCE (for Spotlight Calendar)
-----------------------------------------------------*/
+
+// GET BOOKINGS BY RESOURCE (for Spotlight Calendar)
 app.get('/api/bookings/resource/:resourceName', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -234,6 +235,42 @@ app.delete('/api/bookings/:id', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to delete booking" });
+    }
+});
+
+// VIEW PAST AND UPCOMING BOOKINGS
+app.get("/api/bookings/:id", async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const userId = Number(req.params.id);
+        const type = req.query.type;
+
+        if (req.session.userRole !== 'admin' && req.session.userId !== userId) {
+            return res.status(403).json({ error: 'Booking not found' });
+        }
+
+        let bookings;
+        if (type === 'past') {
+            bookings = await getPastBookings(userId);
+        } else if (type === 'upcoming') {
+            bookings = await getUpcomingBookings(userId);
+        } else {
+            return res.status(400).json({ error: "Query parameter 'type' must be 'past' or 'upcoming'" });
+        }
+
+        const normalied = bookings.map((row) => {
+            const d = new Date(row.date);
+            if (!isNaN(d)) row.date = d.toISOString().split("T")[0];
+            return row;
+        });
+
+        res.json(normalied);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load bookings" })
     }
 });
 

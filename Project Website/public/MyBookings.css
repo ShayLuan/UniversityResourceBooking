@@ -1,4 +1,6 @@
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -7,15 +9,15 @@ html {
   height: 100%;
   margin: 0;
   display: flex;
+  flex: 1;
   flex-direction: column;
   font-family: 'Exo 2', sans-serif;
   color: #132a13;
-}
-
-body.mybookingspage{
+  overflow-x: hidden;
   background:
-    linear-gradient(rgba(255,255,255,.575), rgba(255,255,255,.575)),
+    linear-gradient(rgba(255, 255, 255, .575), rgba(255, 255, 255, .575)),
     url("sourcePics/PACCAR-Hall-mag.jpg") center/cover no-repeat fixed;
+  background-size: cover;
 }
 
 main {

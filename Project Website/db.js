@@ -22,8 +22,8 @@ async function findUser(email, password) {
 
     if (rows.length === 0) return null;
     const user = rows[0];
-// ------------------------------------------------------
-// HASHED PASSWORD CASE (normal bcrypt)
+    // ------------------------------------------------------
+    // HASHED PASSWORD CASE (normal bcrypt)
     if (user.password.startsWith("$2")) {
         const match = await bcrypt.compare(password, user.password);
         return match ? user : null;
@@ -113,6 +113,25 @@ async function deleteBooking(id, userId) {
     return result.affectedRows > 0;
 }
 
+// ------------------------------------------------------
+// VIEW PAST AND UPCOMING BOOKINGS
+// ------------------------------------------------------
+async function getPastBookings(userId) {
+    const [rows] = await pool.quary(
+        `SELECT * FROM bookings WHERE user_id = ? AND date < CURDATE() ORDER BY date DESC`,
+        [userID]
+    );
+    return rows;
+}
+
+async function getUpcomingBookings(userID) {
+    const [rows] = await pool.query(
+        'SELECT * FROM bookings WHERE user_id = ? AND date >= CURDATE() ORDER BY date ASC',
+        [userID]
+    );
+    return rows;
+}
+
 // gets user by ID for the name
 async function getUserById(userId) {
     // try to get all fields, might be empty
@@ -139,7 +158,7 @@ async function getUserById(userId) {
 async function updateUserInfo(userId, updates) {
     const fields = [];
     const values = [];
-    
+
     if (updates.name !== undefined) {
         fields.push("name = ?");
         values.push(updates.name);
@@ -156,13 +175,13 @@ async function updateUserInfo(userId, updates) {
         fields.push("address = ?");
         values.push(updates.address);
     }
-    
+
     if (fields.length === 0) {
         return { success: false, error: 'No fields to update' };
     }
-    
+
     values.push(userId);
-    
+
     try {
         const [result] = await pool.query(
             `UPDATE users SET ${fields.join(", ")} WHERE id = ?`,
