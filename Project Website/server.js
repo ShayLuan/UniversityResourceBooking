@@ -60,8 +60,11 @@ app.post('/login', async (req, res) => {
 
         if (user.role === 'admin') {
             return res.redirect('/AdminDashboard.html');
+        } else if (user.role === 'faculty') {
+            return res.redirect('/FacultyDashboard.html');
+        } else {
+            return res.redirect('/StudentDashboard.html');
         }
-        return res.redirect('/StudentDashboard.html');
 
     } catch (err) {
         console.error(err);

@@ -27,7 +27,6 @@ html {
     z-index: 1000;
 }
 
-.nav-left,
 .nav-right {
     display: flex;
     gap: 20px;
@@ -213,16 +212,16 @@ html {
 }
 
 footer {
-  background: #a7c957;
-  padding: 1.2em 2em;
-  font-family: inherit;
-  font-size: 1em;
-  color: #222;
-  border-top: 1px solid #222;
-  text-align: center;
+    background: #a7c957;
+    padding: 1.2em 2em;
+    font-family: inherit;
+    font-size: 1em;
+    color: #222;
+    border-top: 1px solid #222;
+    text-align: center;
 }
 
 #footer-link:hover,
 #footer-link:focus {
-  color: #ecf39e;
+    color: #ecf39e;
 }

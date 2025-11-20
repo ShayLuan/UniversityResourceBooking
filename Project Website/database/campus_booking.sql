@@ -8,7 +8,7 @@
 -- Table structure for main table 'campus_bookings'
 --
 
-DROP DATABASE IF EXISTS `campus_bookings`;
+DROP DATABASE IF EXISTS `campus_booking`;
 CREATE DATABASE `campus_booking`;
 USE campus_booking;
 
@@ -22,7 +22,6 @@ DROP TABLE IF EXISTS `resources`;
 -- 
 -- Table structure for table `users`
 --
-
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -37,12 +36,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 -- 
 
-INSERT INTO `users` VALUES 
-(1,'Test Name','test@abc.com','asdf','student'),
-(3,'User Two','test2@abc.com','asdf','student'),
-(7,'User Three','u3@abc.com','$2b$10$GVsTEy79AsneqsmQ5LD3K.cCQJbuOGRbrv9Q.FARCyqZ8g6JIVmQK','student');
-
-
+INSERT INTO `users` (id, name, email, password, role) VALUES
+(1, "Dr.Jeff", 'jeff@abc.com', 'asdf', 'faculty'),
+(2, 'User Three','u3@abc.com','$2b$10$GVsTEy79AsneqsmQ5LD3K.cCQJbuOGRbrv9Q.FARCyqZ8g6JIVmQK','student'),
+(3, 'Test Name','test@abc.com','asdf','student'),
+(7, 'Admin', 'admin@abc.com', 'asdf', 'admin');
 
 -- 
 -- Table structure for table `bookings`
@@ -65,7 +63,8 @@ CREATE TABLE `bookings` (
 -- Dumping data for table `bookings`
 -- 
 
-INSERT INTO `bookings` VALUES (4,7,'event-spaces','2025-11-20','8:30 AM',90,'2025-11-17 17:06:22');
+INSERT INTO `bookings` VALUES
+(1,2,'event-spaces','2025-11-20','8:30 AM',90,'2025-11-17 17:06:22');
 
 
 
@@ -87,7 +86,7 @@ CREATE TABLE `resources` (
 -- Dumping data for table `resources`
 --
 
-INSERT INTO resources (name, category, description, location, capacity, image_url) VALUES
+INSERT INTO `resources` (name, category, description, location, capacity, image_url) VALUES
 -- study Rooms
 ('Study Room A', 'Study Room', 'Quiet room for individual study', 'Library 2nd floor', 4, NULL),
 ('Study Room B', 'Study Room', 'Small group study room', 'Library 3rd floor', 6, NULL),
