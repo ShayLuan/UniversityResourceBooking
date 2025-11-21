@@ -138,9 +138,9 @@ async function deleteBooking(id, userId) {
 // VIEW PAST AND UPCOMING BOOKINGS
 // ------------------------------------------------------
 async function getPastBookings(userId) {
-    const [rows] = await pool.quary(
+    const [rows] = await pool.query(
         `SELECT * FROM bookings WHERE user_id = ? AND date < CURDATE() ORDER BY date DESC`,
-        [userID]
+        [userId]
     );
     return rows;
 }
@@ -319,5 +319,7 @@ module.exports = {
     getAllResources,
     getBookingsByResource,
     findUserByEmail,
-    resetUserPassword
+    resetUserPassword,
+    getPastBookings,
+    getUpcomingBookings
 };
