@@ -19,6 +19,7 @@
 <body class="administrator">
   <nav class="sidebar">
     <a href="ResourcesLoginAdmin.html" class="sidebar-link"><span>📖</span> Browse Resources</a>
+    <a href="" class="sidebar-link" id="announcementLink"><span>📢</span> Send Announcement</a>
     <a href="Home.html" class="sidebar-link"><span>🚪</span> Log out</a>
   </nav>
   <div class="main">
@@ -64,13 +65,28 @@
             <option value="library-resource">Library Resource</option>
           </select>
         </div>
+        
+        <!-- input resource name -->
+        <div id="resource-name-container" style="display: none; margin-top: 12px;">
+          <label for="resource-name-input" style="display: block; margin-bottom: 8px; font-weight: 600; color: #132a13;">
+            Resource Name:
+          </label>
+          <input 
+            type="text" 
+            id="resource-name-input" 
+            class="resource-formgroup" 
+            placeholder="Enter resource name (e.g., Study Room D)"
+            style="width: 100%; max-width: 400px;"
+          />
+        </div>
+        
         <button class="button" id="add-resource-confirm-button" style="display: none">
           Confirm Add Resource
         </button>
 
         <label>
           <p>
-            For an existing resource, <br />
+            For an <b>existing</b> resource, <br />
             Choose a resource to manage:
           </p>
           <aside class="filter-card">

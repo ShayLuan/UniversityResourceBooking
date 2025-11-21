@@ -14,6 +14,11 @@ const {
     updateBooking,
     deleteBooking,
     getAllResources,
+    addResource,
+    getResourceByName,
+    deleteResource,
+    updateResourceSuspended,
+    duplicateResource,
     getBookingsByResource,
     getPastBookings,
     getUpcomingBookings
@@ -400,6 +405,95 @@ app.get('/api/resources', async (_req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to load resources" });
+    }
+});
+
+// do we need to authenticate this?
+// check back later
+app.post('/api/resources', async (req, res) => {
+    try {
+        const { name, category, description, location, capacity } = req.body;
+        
+        if (!name || !category) {
+            return res.status(400).json({ error: "Name and category are required" });
+        }
+        
+        const resourceId = await addResource(name, category, description, location, capacity, null);
+        res.json({ ok: true, id: resourceId, message: "Resource added successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to add resource" });
+    }
+});
+
+// delete resource
+app.delete('/api/resources/:name', async (req, res) => {
+    try {
+        const { name } = req.params;
+        
+        if (!name) {
+            return res.status(400).json({ error: "Resource name is required" });
+        }
+        
+        const deleted = await deleteResource(name);
+        if (deleted) {
+            res.json({ ok: true, message: "Resource deleted successfully" });
+        } else {
+            res.status(404).json({ error: "Resource not found" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to delete resource" });
+    }
+});
+
+// suspend/resume resource
+app.put('/api/resources/:name/suspend', async (req, res) => {
+    try {
+        const { name } = req.params;
+        const { suspended } = req.body;
+        
+        if (!name || typeof suspended !== 'boolean') {
+            return res.status(400).json({ error: "Resource name and suspended status are required" });
+        }
+        
+        const updated = await updateResourceSuspended(name, suspended);
+        if (updated) {
+            res.json({ ok: true, message: `Resource ${suspended ? 'suspended' : 'resumed'} successfully` });
+        } else {
+            res.status(404).json({ error: "Resource not found" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to update resource status" });
+    }
+});
+
+// duplicate resource
+app.post('/api/resources/:name/duplicate', async (req, res) => {
+    try {
+        const { name } = req.params;
+        const { newName } = req.body;
+        
+        if (!name || !newName) {
+            return res.status(400).json({ error: "Original resource name and new name are required" });
+        }
+        
+        // check if new name already exists
+        const existing = await getResourceByName(newName);
+        if (existing) {
+            return res.status(400).json({ error: "A resource with this name already exists" });
+        }
+        
+        const resourceId = await duplicateResource(name, newName);
+        res.json({ ok: true, id: resourceId, message: "Resource duplicated successfully" });
+    } catch (err) {
+        console.error(err);
+        if (err.message === "Resource not found") {
+            res.status(404).json({ error: err.message });
+        } else {
+            res.status(500).json({ error: "Failed to duplicate resource" });
+        }
     }
 });
 

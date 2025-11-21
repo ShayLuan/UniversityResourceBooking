@@ -37,7 +37,7 @@ CREATE TABLE `users` (
 -- 
 
 INSERT INTO `users` (id, name, email, password, role) VALUES
-(1, "Dr.Jeff", 'jeff@abc.com', 'asdf', 'faculty'),
+(1, 'Dr.Jeff', 'jeff@abc.com', 'asdf', 'faculty'),
 (2, 'User Three','u3@abc.com','$2b$10$GVsTEy79AsneqsmQ5LD3K.cCQJbuOGRbrv9Q.FARCyqZ8g6JIVmQK','student'),
 (3, 'Test Name','test@abc.com','asdf','student'),
 (7, 'Admin', 'admin@abc.com', 'asdf', 'admin');

@@ -70,16 +70,13 @@ h1 {
 /* Card links */
 .card-link {
   display: block;
-  /* Make the anchor a block element */
   color: inherit;
-  /* Inherit text color from card */
   text-decoration: none;
-  /*Remove underline */
   position: relative;
-  /* For potential child positioning */
   border-radius: 16px;
-  /* Match card’s rounded corners*/
   transition: box-shadow 0.3s, transform 0.3s;
+  width: fit-content; 
+  max-width: 250px;  
 }
 
 /* Card links when hovered on or clicked */
@@ -194,4 +191,30 @@ Reduce main content padding for a better fit
   font-size: 1em;
   background-color: #f8fbe6;
   font-family: 'Exo 2', sans-serif;
+}
+
+.card-grid.second-row {
+  margin-top: 24px;
+}
+
+#resource-name-container {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+#resource-name-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #132a13;
+  font-family: 'Exo 2', sans-serif;
+}
+
+#resource-name-input {
+  width: 100%;
+  max-width: 400px;
+}
+
+#add-resource-confirm-button {
+  margin-top: 12px;
 }

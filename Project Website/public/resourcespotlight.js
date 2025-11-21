@@ -29,15 +29,31 @@ async function loadResources() {
     select.innerHTML = "";
 
     // Add real resources
+    const availableResources = [];
     list.forEach((r) => {
       const opt = document.createElement("option");
       opt.value = r.name;
       opt.textContent = formatResourceName(r.name); //formatted name cuz this way it prettier
+      
+      // grey out suspended resources
+      if (r.suspended) {
+        opt.style.color = '#999';
+        opt.style.fontStyle = 'italic';
+        opt.textContent += ' (Suspended)';
+        opt.disabled = true;
+      } else {
+        availableResources.push(r);
+      }
+      
       select.appendChild(opt);
     });
 
-    // Auto-load first resource
-    if (list.length > 0) {
+    // load first available resource
+    if (availableResources.length > 0) {
+      select.value = availableResources[0].name;
+      loadBookingsForResource(availableResources[0].name);
+    } else if (list.length > 0) {
+      // just load first one if all are suspended
       select.value = list[0].name;
       loadBookingsForResource(list[0].name);
     }
@@ -70,7 +86,7 @@ async function loadBookingsForResource(resourceName) {
   }
 }
 
-// Helper: normalize any date value to "YYYY-MM-DD"
+// herlper: normalize any date value to "YYYY-MM-DD"
 function normalizedDate(raw) {
   const d = new Date(raw);
   if (isNaN(d)) return raw; // if it's already a "YYYY-MM-DD" string it might just pass through

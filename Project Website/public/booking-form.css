@@ -18,6 +18,9 @@ html {
 .booking {
     position: relative;
     z-index: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .booking::before {
@@ -240,6 +243,7 @@ select option {
     border-radius: 12px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
     overflow: visible !important;
+    flex: 1;
 }
 
 /* Button */
@@ -277,6 +281,7 @@ footer {
   color: #222;
   border-top: 1px solid #222;
   text-align: center;
+  margin-top: auto;
 }
 
 #footer-link:hover,

@@ -25,6 +25,15 @@ async function loadResources() {
       const opt = document.createElement("option");
       opt.value = r.name;        //saves real name
       opt.textContent = r.name;  //displays real name
+      
+      // grey out and disable suspended resources
+      if (r.suspended) {
+        opt.style.color = '#999';
+        opt.style.fontStyle = 'italic';
+        opt.textContent += ' (Suspended)';
+        opt.disabled = true;
+      }
+      
       select.appendChild(opt);
     });
 

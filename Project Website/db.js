@@ -301,6 +301,89 @@ async function getAllResources() {
     return rows;
 }
 
+// ------------------------------------------------------
+// ADD RESOURCE
+// ------------------------------------------------------
+async function addResource(name, category, description = null, location = null, capacity = null, image_url = null) {
+    const [result] = await pool.query(
+        "INSERT INTO resources (name, category, description, location, capacity, image_url) VALUES (?, ?, ?, ?, ?, ?)",
+        [name, category, description, location, capacity, image_url]
+    );
+    return result.insertId;
+}
+
+// ------------------------------------------------------
+// GET RESOURCE BY NAME
+// ------------------------------------------------------
+async function getResourceByName(name) {
+    const [rows] = await pool.query(
+        "SELECT * FROM resources WHERE name = ?",
+        [name]
+    );
+    return rows.length > 0 ? rows[0] : null;
+}
+
+// ------------------------------------------------------
+// DELETE RESOURCE
+// ------------------------------------------------------
+async function deleteResource(name) {
+    const [result] = await pool.query(
+        "DELETE FROM resources WHERE name = ?",
+        [name]
+    );
+    return result.affectedRows > 0;
+}
+
+// ------------------------------------------------------
+// SUSPEND/RESUME RESOURCE
+// ------------------------------------------------------
+async function updateResourceSuspended(name, suspended) {
+    // suspend column?
+    try {
+        await pool.query("SELECT suspended FROM resources LIMIT 1");
+    } catch (err) {
+        // add
+        try {
+            await pool.query("ALTER TABLE resources ADD COLUMN suspended BOOLEAN DEFAULT FALSE");
+        } catch (alterErr) {
+            // continue if added
+        }
+    }
+    
+    const [result] = await pool.query(
+        "UPDATE resources SET suspended = ? WHERE name = ?",
+        [suspended, name]
+    );
+    return result.affectedRows > 0;
+}
+
+// ------------------------------------------------------
+// DUPLICATE RESOURCE
+// ------------------------------------------------------
+async function duplicateResource(originalName, newName) {
+    // ensure suspended column exists
+    try {
+        await pool.query("SELECT suspended FROM resources LIMIT 1");
+    } catch (err) {
+        // add if it doesn't exist
+        try {
+            await pool.query("ALTER TABLE resources ADD COLUMN suspended BOOLEAN DEFAULT FALSE");
+        } catch (alterErr) {
+            // continue if added
+        }
+    }
+    
+    const resource = await getResourceByName(originalName);
+    if (!resource) {
+        throw new Error("Resource not found");
+    }
+    
+    const [result] = await pool.query(
+        "INSERT INTO resources (name, category, description, location, capacity, image_url, suspended) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [newName, resource.category, resource.description, resource.location, resource.capacity, resource.image_url, resource.suspended || false]
+    );
+    return result.insertId;
+}
 
 // ------------------------------------------------------
 // EXPORTS
@@ -317,6 +400,11 @@ module.exports = {
     updateBooking,
     deleteBooking,
     getAllResources,
+    addResource,
+    getResourceByName,
+    deleteResource,
+    updateResourceSuspended,
+    duplicateResource,
     getBookingsByResource,
     findUserByEmail,
     resetUserPassword,
