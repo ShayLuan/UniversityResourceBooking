@@ -159,7 +159,7 @@ async function getUserById(userId) {
     // can't let it crash
     try {
         const [rows] = await pool.query(
-            "SELECT id, name, email, role FROM users WHERE id = ?",
+            "SELECT id, name, email, role, phone, address FROM users WHERE id = ?",
             [userId]
         );
         return rows.length > 0 ? rows[0] : null;
