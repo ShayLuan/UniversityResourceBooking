@@ -204,7 +204,7 @@ async function cancelBooking(bookingId) {
 }
 
 
-// View bookingg history
+// View booking history
 async function loadMyBookingsHistory() {
     try {
         const response = await fetch('/api/bookings');
