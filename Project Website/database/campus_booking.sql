@@ -54,6 +54,8 @@ CREATE TABLE `bookings` (
   `time` varchar(50) NOT NULL,
   `duration` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `start_time` DATETIME,
+  `end_time` DATETIME,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -63,8 +65,9 @@ CREATE TABLE `bookings` (
 -- Dumping data for table `bookings`
 -- 
 
-INSERT INTO `bookings` VALUES
-(1,2,'event-spaces','2025-11-20','8:30 AM',90,'2025-11-17 17:06:22');
+ INSERT INTO `bookings` VALUES
+ (1,2,'event space a','2025-11-20','8:30 AM', 90,
+ '2025-11-17 17:06:22', '2025-11-20 08:30:00', '2025-11-20 10:00:00');
 
 
 

@@ -25,7 +25,7 @@ async function loadResources() {
       const opt = document.createElement("option");
       opt.value = r.name;        //saves real name
       opt.textContent = r.name;  //displays real name
-      
+
       // grey out and disable suspended resources
       if (r.suspended) {
         opt.style.color = '#999';
@@ -33,7 +33,7 @@ async function loadResources() {
         opt.textContent += ' (Suspended)';
         opt.disabled = true;
       }
-      
+
       select.appendChild(opt);
     });
 
@@ -155,6 +155,21 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  // Verify for conflicts
+  function convertTo24H(time) {
+    if (!time) return "";
+
+    const [timePart, ampm] = time.split(" ");
+    let [h, m] = timePart.split(":");
+
+    h = parseInt(h);
+
+    if (ampm === "PM" && h !== 12) h += 12;
+    if (ampm === "AM" && h === 12) h = 0;
+
+    return `${String(h).padStart(2, "0")}:${m}`;
+  }
+
   // Submit booking to backend
   try {
     const url = modifyBookingId ? `/api/bookings/${modifyBookingId}` : '/api/bookings';
@@ -168,7 +183,7 @@ form.addEventListener("submit", async (event) => {
       body: JSON.stringify({
         resource: resource.value,
         date: date.value,
-        time: time.value,
+        time: convertTo24H(time.value),
         duration: parseInt(duration.value)
       })
     });

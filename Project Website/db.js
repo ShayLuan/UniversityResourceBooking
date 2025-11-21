@@ -71,16 +71,42 @@ async function resetUserPassword(userId, hashedPassword) {
 }
 
 // ------------------------------------------------------
-// CREATE BOOKING
+// CREATE BOOKING (WITH CONFLICTS VERIFICATION)
 // ------------------------------------------------------
 async function createBooking(userId, resource, date, time, duration) {
-    const [result] = await pool.query(
-        `INSERT INTO bookings (user_id, resource, date, time, duration)
-         VALUES (?, ?, ?, ?, ?)`,
-        [userId, resource, date, time, duration]
+
+    const startJs = new Date(`${date}T${time}:00`);
+    const endJs = new Date(startJs.getTime() + parseInt(duration) * 60000);
+
+    function format(dt) {
+        const pad = (n) => n.toString().padStart(2, "0");
+        return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())} `
+            + `${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`;
+    }
+
+    const start_time = format(startJs);
+    const end_time = format(endJs);
+
+    // Check for conflicts
+    const [conflictRows] = await pool.query(
+        `SELECT id FROM bookings
+         WHERE resource = ?
+         AND date = ?
+         AND (start_time < ? AND end_time > ?)`,
+        [resource, date, end_time, start_time]
     );
 
-    return result.insertId;
+    if (conflictRows.length > 0) {
+        return { success: false, error: "Time slot is already booked for this resource." };
+    }
+
+    const [result] = await pool.query(
+        `INSERT INTO bookings (user_id, resource, date, time, duration, start_time, end_time)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [userId, resource, date, time, duration, start_time, end_time]
+    );
+
+    return { ok: true, bookingId: result.insertId };
 }
 
 // ------------------------------------------------------
@@ -98,14 +124,45 @@ async function getUserBookings(userId) {
 // UPDATE BOOKING
 // ------------------------------------------------------
 async function updateBooking(id, userId, resource, date, time, duration) {
-    const [result] = await pool.query(
-        `UPDATE bookings
-         SET resource = ?, date = ?, time = ?, duration = ?
-         WHERE id = ? AND user_id = ?`,
-        [resource, date, time, duration, id, userId]
+
+    const startJs = new Date(`${date}T${time}:00`);
+    const endJs = new Date(startJs.getTime() + parseInt(duration) * 60000);
+
+    function format(dt) {
+        const pad = (n) => n.toString().padStart(2, "0");
+        return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())} `
+            + `${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`;
+    }
+
+    const start_time = format(startJs);
+    const end_time = format(endJs);
+
+    // Check for conflicts
+    const [conflicts] = await pool.query(
+        `SELECT id FROM bookings
+         WHERE resource = ?
+         AND date = ?
+         AND id <> ?
+         AND (start_time < ? AND end_time > ?)`,
+        [resource, date, id, end_time, start_time]
     );
 
-    return result.affectedRows > 0;
+    if (conflicts.length > 0) {
+        return { ok: false, error: "Time slot is already booked for this resource." };
+    }
+
+    const [result] = await pool.query(
+        `UPDATE bookings
+         SET resource = ?, date = ?, time = ?, duration = ?, start_time = ?, end_time = ?
+         WHERE id = ? AND user_id = ?`,
+        [resource, date, time, duration, start_time, end_time, id, userId]
+    );
+
+    if (result.affectedRows === 0) {
+        return { ok: false, error: "Booking not found" };
+    }
+
+    return { ok: true };
 }
 
 // ------------------------------------------------------
