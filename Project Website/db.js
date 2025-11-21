@@ -349,7 +349,7 @@ async function updateResourceSuspended(name, suspended) {
             // continue if added
         }
     }
-    
+
     const [result] = await pool.query(
         "UPDATE resources SET suspended = ? WHERE name = ?",
         [suspended, name]
@@ -372,12 +372,10 @@ async function duplicateResource(originalName, newName) {
             // continue if added
         }
     }
-    
     const resource = await getResourceByName(originalName);
     if (!resource) {
         throw new Error("Resource not found");
     }
-    
     const [result] = await pool.query(
         "INSERT INTO resources (name, category, description, location, capacity, image_url, suspended) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [newName, resource.category, resource.description, resource.location, resource.capacity, resource.image_url, resource.suspended || false]
