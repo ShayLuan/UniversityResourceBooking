@@ -27,7 +27,13 @@
     <main>
       <section id="login-frame">
         <h1>Log in</h1>
-        <form action="/login" method="POST" id="login-form">
+        
+        <!-- INCORRECT PASSWORD OR E-MAIL WARNING -->
+        <p id="errorMsg" style="color: red; display: none; margin-bottom: 10px;">
+          Incorrect email or password.
+        </p>
+
+        <form action="/Login" method="POST" id="login-form">
           <label for="email"></label>
           <input
             type="email"
@@ -64,6 +70,13 @@
         >support@campusbooker.edu</a
       >
     </footer>
-    <script type="text/javascript" src="script.js" ;></script>
+
+    <!-- Showing the "invalid login" message if the URL contains ?error=1 -->
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("error") === "1") {
+        document.getElementById("errorMsg").style.display = "block";
+      }
+    </script>
   </body>
 </html>
