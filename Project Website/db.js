@@ -439,6 +439,50 @@ async function duplicateResource(originalName, newName) {
     );
     return result.insertId;
 }
+async function getTotalBookings() {
+    const [rows] = await pool.query("SELECT COUNT(*) AS count FROM bookings");
+    return rows[0].count || 0;
+}
+
+async function getBookingsPerDay() {
+    const [rows] = await pool.query(`
+        SELECT date, COUNT(*) AS count
+        FROM bookings
+        GROUP BY date
+        ORDER BY date DESC
+        LIMIT 7;
+    `);
+    return rows;
+}
+
+async function getTopResources() {
+    const [rows] = await pool.query(`
+        SELECT resource, COUNT(*) AS count
+        FROM bookings
+        GROUP BY resource
+        ORDER BY count DESC
+        LIMIT 5;
+    `);
+    return rows;
+}
+
+async function getAverageDuration() {
+    const [rows] = await pool.query(`
+        SELECT AVG(duration) AS avgDuration FROM bookings
+    `);
+    return rows[0].avgDuration || 0;
+}
+
+async function getActiveUsers() {
+    const [rows] = await pool.query(`
+        SELECT user_id, COUNT(*) AS total
+        FROM bookings
+        GROUP BY user_id
+        ORDER BY total DESC
+        LIMIT 10;
+    `);
+    return rows;
+}
 
 // ------------------------------------------------------
 // EXPORTS
@@ -465,4 +509,10 @@ module.exports = {
     resetUserPassword,
     getPastBookings,
     getUpcomingBookings,
+    getTotalBookings,
+    getBookingsPerDay,
+    getTopResources,
+    getAverageDuration,
+    getActiveUsers
 };
+
