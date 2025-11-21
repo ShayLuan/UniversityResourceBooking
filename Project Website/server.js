@@ -27,11 +27,6 @@ const {
 const app = express();
 const port = 3000;
 
-// Middleware
-app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 // Session
 app.use(session({
     secret: 'campus-booking-secret-key-change-in-production',
@@ -40,28 +35,34 @@ app.use(session({
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
+
+// Middleware
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+
+
 // Home
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/Home.html');
 });
 
 // LOGIN
-app.post('/login', async (req, res) => {
+app.post('/Login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
         const user = await findUser(email, password);
 
         if (!user) {
-            return res.status(401).send(`
-                <h1>Invalid login</h1>
-                <p><a href="/Login.html">Try again</a></p>
-            `);
+            return res.redirect('/Login.html?error=1');
         }
 
         req.session.userId = user.id;
         req.session.userEmail = user.email;
         req.session.userRole = user.role;
+
 
         if (user.role === 'admin') {
             return res.redirect('/AdminDashboard.html');

@@ -145,10 +145,10 @@ async function getPastBookings(userId) {
     return rows;
 }
 
-async function getUpcomingBookings(userID) {
+async function getUpcomingBookings(userId) {
     const [rows] = await pool.query(
         'SELECT * FROM bookings WHERE user_id = ? AND date >= CURDATE() ORDER BY date ASC',
-        [userID]
+        [userId]
     );
     return rows;
 }
@@ -159,7 +159,7 @@ async function getUserById(userId) {
     // can't let it crash
     try {
         const [rows] = await pool.query(
-            "SELECT id, name, email, role, phone, address FROM users WHERE id = ?",
+            "SELECT id, name, email, role FROM users WHERE id = ?",
             [userId]
         );
         return rows.length > 0 ? rows[0] : null;
@@ -409,5 +409,5 @@ module.exports = {
     findUserByEmail,
     resetUserPassword,
     getPastBookings,
-    getUpcomingBookings
+    getUpcomingBookings,
 };
