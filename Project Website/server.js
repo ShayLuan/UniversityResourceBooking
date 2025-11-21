@@ -21,7 +21,12 @@ const {
     duplicateResource,
     getBookingsByResource,
     getPastBookings,
-    getUpcomingBookings
+    getUpcomingBookings,
+    getTotalBookings,
+    getBookingsPerDay,
+    getTopResources,
+    getAverageDuration,
+    getActiveUsers
 } = require('./db.js');
 
 const app = express();
@@ -497,6 +502,29 @@ app.post('/api/resources/:name/duplicate', async (req, res) => {
         }
     }
 });
+app.get('/api/analytics/summary', async (req, res) => {
+    try {
+        const totalBookings = await getTotalBookings();
+        const bookingsPerDay = await getBookingsPerDay();
+        const topResources = await getTopResources();
+        const avgDuration = await getAverageDuration();
+        const activeUsers = await getActiveUsers();
+
+        res.json({
+            totalBookings,
+            bookingsPerDay,
+            topResources,
+            avgDuration,
+            activeUsers
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load analytics" });
+    }
+});
+
+
 
 // START SERVER
 app.listen(port, () => {

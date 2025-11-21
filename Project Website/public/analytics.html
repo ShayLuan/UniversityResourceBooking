@@ -17,14 +17,69 @@
 
     <link type="text/css" rel="stylesheet" href="Home.css" />
 </head>
-
 <body class="analytics">
-    <img src="sourcePics/Analytics-Placeholder.png" alt="statistics illustration" class="analytics-image">
-    <div>
-        <p>
-            Real-time analytics will be ready for deliverable 2
-        </p>
-    </div>
+    <h1>Campus Booking Analytics</h1>
+
+    <section id="summary">
+        <h2>Overview</h2>
+        <p><strong>Total Bookings:</strong> <span id="totalBookings"></span></p>
+        <p><strong>Average Duration:</strong> <span id="avgDuration"></span> min</p>
+    </section>
+
+    <section>
+        <h2>Bookings Per Day (Last 7 Days)</h2>
+        <ul id="bookingsPerDay"></ul>
+    </section>
+
+    <section>
+        <h2>Top Resources</h2>
+        <ul id="topResources"></ul>
+    </section>
+
+    <script>
+async function loadAnalytics() {
+    const res = await fetch('/api/analytics/summary');
+    const data = await res.json();
+
+    // SAFELY HANDLE TOTAL BOOKINGS
+    document.getElementById("totalBookings").textContent =
+        data.totalBookings === 0 ? "No bookings yet" : data.totalBookings;
+
+    // SAFELY HANDLE AVG DURATION
+    document.getElementById("avgDuration").textContent =
+        data.avgDuration === 0
+            ? "No data"
+            : Math.round(data.avgDuration) + " min";
+
+    // BOOKINGS PER DAY
+    const days = document.getElementById("bookingsPerDay");
+    days.innerHTML = ""; // Clear old data
+
+    if (data.bookingsPerDay.length === 0) {
+        days.innerHTML = "<li>No booking activity yet</li>";
+    } else {
+        data.bookingsPerDay.forEach(row => {
+            days.innerHTML += `<li>${row.date}: ${row.count} bookings</li>`;
+        });
+    }
+
+    // TOP RESOURCES
+    const top = document.getElementById("topResources");
+    top.innerHTML = "";
+
+    if (data.topResources.length === 0) {
+        top.innerHTML = "<li>No resources booked yet</li>";
+    } else {
+        data.topResources.forEach(row => {
+            top.innerHTML += `<li>${row.resource}: ${row.count}</li>`;
+        });
+    }
+}
+
+loadAnalytics();
+</script>
+
 </body>
+
 
 </html>
