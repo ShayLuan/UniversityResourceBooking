@@ -32,7 +32,7 @@ const {
 } = require('./db.js');
 
 const app = express();
-const port = 3000;
+const port = 5000;
 
 // Session
 app.use(session({
@@ -70,9 +70,8 @@ app.post('/Login', async (req, res) => {
         req.session.userEmail = user.email;
         req.session.userRole = user.role;
 
-
         if (user.role === 'admin') {
-            return res.redirect('/AdminDashboard.html');
+            return res.redirect('/LoginAdmin.html');
         } else if (user.role === 'faculty') {
             return res.redirect('/FacultyDashboard.html');
         } else {
@@ -85,6 +84,32 @@ app.post('/Login', async (req, res) => {
     }
 });
 
+// LOGIN for admin
+app.post('/LoginAdmin', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await findUser(email, password);
+
+        if (!user) {
+            return res.redirect('/Login.html?error=1');
+        }
+
+        if (user.role !== 'admin') {
+            return res.redirect('/Login.html?error=notAdmin');
+        }
+
+        req.session.userId = user.id;
+        req.session.userEmail = user.email;
+        req.session.userRole = user.role;
+
+        return res.redirect('/AdminDashboard.html');
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
+    }
+});
 
 // GET BOOKINGS BY RESOURCE (for Spotlight Calendar)
 app.get('/api/bookings/resource/:resourceName', async (req, res) => {

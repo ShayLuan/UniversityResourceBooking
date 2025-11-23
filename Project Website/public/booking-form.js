@@ -155,6 +155,17 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  // Prevents booking in the past
+  const selectedDate = date.value;
+  const selectedTime = convertTo24H(time.value);
+  const selectedDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
+  const now = new Date();
+
+  if (selectedDateTime < now) {
+      alert("You cannot book this time.");
+    return;
+  }
+
   // Verify for conflicts
   function convertTo24H(time) {
     if (!time) return "";

@@ -49,10 +49,8 @@ async function loadUserData() {
   }
 }
 
-function validateField(fieldName, value) {
 
-}
-
+// modify
 function modifyField(buttonId, valueId, label) {
   const button = document.getElementById(buttonId);
   const value = document.getElementById(valueId);
