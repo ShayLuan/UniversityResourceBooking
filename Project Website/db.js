@@ -485,6 +485,48 @@ async function getActiveUsers() {
 }
 
 // ------------------------------------------------------
+// ANNOUNCEMENTS
+// ------------------------------------------------------
+async function createAnnouncement(message, adminId) {
+    try {
+        await pool.query("SELECT id FROM announcements LIMIT 1");
+    } catch (err) {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS announcements (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                message TEXT NOT NULL,
+                admin_id INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+        `);
+    }
+    
+    const [result] = await pool.query(
+        "INSERT INTO announcements (message, admin_id) VALUES (?, ?)",
+        [message, adminId]
+    );
+    return result.insertId;
+}
+
+async function getAnnouncements() {
+    try {
+        await pool.query("SELECT id FROM announcements LIMIT 1");
+    } catch (err) {
+        return [];
+    }
+    
+    const [rows] = await pool.query(`
+        SELECT a.id, a.message, a.created_at, u.name as admin_name
+        FROM announcements a
+        JOIN users u ON a.admin_id = u.id
+        ORDER BY a.created_at DESC
+        LIMIT 50
+    `);
+    return rows;
+}
+
+// ------------------------------------------------------
 // EXPORTS
 // ------------------------------------------------------
 module.exports = {
@@ -513,6 +555,8 @@ module.exports = {
     getBookingsPerDay,
     getTopResources,
     getAverageDuration,
-    getActiveUsers
+    getActiveUsers,
+    createAnnouncement,
+    getAnnouncements
 };
 

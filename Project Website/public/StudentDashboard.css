@@ -142,3 +142,143 @@ Responsive adjustments for small screens (600px or less)
   color: #ecf39e;
   box-shadow: 0 2px 8px rgba(50, 100, 50, 0.07) inset;
 }
+
+/* messages modal */
+#messages-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.messages-bubble {
+  position: relative;
+  background: #ecf39e;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 2px solid #90a955;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages-bubble .bubble-tail {
+  position: absolute;
+  bottom: -20px;
+  left: 50px;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #ecf39e;
+}
+
+.messages-bubble .bubble-tail::before {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: -22px;
+  width: 0;
+  height: 0;
+  border-left: 22px solid transparent;
+  border-right: 22px solid transparent;
+  border-top: 22px solid #90a955;
+  z-index: -1;
+}
+
+.messages-bubble .bubble-content h3 {
+  margin: 0 0 20px 0;
+  color: #132a13;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+#messages-container {
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding-right: 8px;
+}
+
+#messages-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+#messages-container::-webkit-scrollbar-track {
+  background: #e9f5db;
+  border-radius: 4px;
+}
+
+#messages-container::-webkit-scrollbar-thumb {
+  background: #a7c957;
+  border-radius: 4px;
+}
+
+.message-item {
+  background: #f8fbe6;
+  border: 1px solid #a7c957;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #a7c957;
+}
+
+.message-header strong {
+  color: #132a13;
+  font-size: 1em;
+}
+
+.message-date {
+  color: #666;
+  font-size: 0.85em;
+}
+
+.message-text {
+  color: #132a13;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.messages-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.messages-buttons .button {
+  font-family: 'Exo 2', sans-serif;
+  background-color: #4f772d;
+  color: white;
+  padding: 12px 28px;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1em;
+}
+
+.messages-buttons .button:hover,
+.messages-buttons .button:focus {
+  background-color: #90a955;
+  cursor: pointer;
+}

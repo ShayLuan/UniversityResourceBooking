@@ -3,6 +3,120 @@ document.getElementById('manage-resource-link').addEventListener('click', functi
     document.getElementById('edit-tools').style.display = "block";
 });
 
+// update suspend all button state
+async function updateSuspendAllButton() {
+    const button = document.getElementById('suspend-all-button');
+    if (!button) return;
+    
+    try {
+        const response = await fetch('/api/resources', { credentials: 'include' });
+        if (!response.ok) return;
+        
+        const resources = await response.json();
+        const allSuspended = resources.length > 0 && resources.every(r => r.suspended);
+        
+        if (allSuspended) {
+            button.textContent = "Resume All Resources";
+            button.style.backgroundColor = "#386641";
+        } else {
+            button.textContent = "Suspend All Resources";
+            button.style.backgroundColor = "#c1121f";
+        }
+    } catch (err) {
+        console.error("Error checking resource status:", err);
+    }
+}
+
+document.getElementById('suspend-all-button').addEventListener('click', async function (event) {
+    // check current state
+    const isResumeMode = this.textContent.includes("Resume");
+    
+    // show confirmation message
+    const confirmation = confirm(
+        isResumeMode 
+            ? "Are you sure you want to resume ALL resources? This will make all resources available for booking."
+            : "Are you sure you want to suspend ALL resources? This will make ALL resources unavailable for booking."
+    );
+    
+    if (!confirmation) {
+        return;
+    }
+    
+    // disable button during operation
+    this.disabled = true;
+    const originalText = this.textContent;
+    this.textContent = isResumeMode ? "Resuming..." : "Suspending...";
+    
+    try {
+        const response = await fetch('/api/resources', { credentials: 'include' });
+        if (!response.ok) {
+            alert("Failed to load resources");
+            this.disabled = false;
+            this.textContent = originalText;
+            return;
+        }
+        
+        const resources = await response.json();
+        const targetResources = isResumeMode 
+            ? resources.filter(r => r.suspended)
+            : resources.filter(r => !r.suspended);
+        
+        if (targetResources.length === 0) {
+            alert(isResumeMode 
+                ? "All resources are already resumed."
+                : "All resources are already suspended.");
+            this.disabled = false;
+            this.textContent = originalText;
+            return;
+        }
+        
+        let successCount = 0;
+        let failCount = 0;
+        
+        for (const resource of targetResources) {
+            try {
+                const suspendResponse = await fetch(`/api/resources/${encodeURIComponent(resource.name)}/suspend`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        suspended: !isResumeMode
+                    })
+                });
+                
+                const suspendData = await suspendResponse.json();
+                if (suspendResponse.ok && suspendData.ok) {
+                    successCount++;
+                } else {
+                    failCount++;
+                }
+            } catch (err) {
+                console.error(`Error ${isResumeMode ? 'resuming' : 'suspending'} ${resource.name}:`, err);
+                failCount++;
+            }
+        }
+        
+        // show result
+        if (failCount === 0) {
+            alert(`Successfully ${isResumeMode ? 'resumed' : 'suspended'} ${successCount} resource(s)!`);
+            // reload resources and update button
+            await loadResourcesIntoSelector();
+            await updateSuspendAllButton();
+        } else {
+            alert(`${isResumeMode ? 'Resumed' : 'Suspended'} ${successCount} resource(s), but ${failCount} failed.`);
+        }
+        
+    } catch (err) {
+        console.error(`Error ${isResumeMode ? 'resuming' : 'suspending'} all resources:`, err);
+        alert(`Error ${isResumeMode ? 'resuming' : 'suspending'} resources. Please try again.`);
+    } finally {
+        this.disabled = false;
+        await updateSuspendAllButton();
+    }
+});
+
 document.getElementById('add-resource-button').addEventListener('click', function (event) {
     document.getElementById('add-resource-selector').style.display = "block";
     // reset form
@@ -197,6 +311,7 @@ document.getElementById('add-resource-confirm-button').addEventListener('click',
             
             // reload resources in the selector dropdown
             await loadResourcesIntoSelector();
+            await updateSuspendAllButton();
         } else {
             alert(`Failed to add resource: ${data.error || 'Unknown error'}`);
             this.disabled = false;
@@ -346,6 +461,7 @@ document.getElementById('confirm-changes').addEventListener('click', async funct
                 }
                 // reload
                 await loadResourcesIntoSelector();
+                await updateSuspendAllButton();
             } else {
                 alert(`Failed to ${!isCurrentlySuspended ? 'suspend' : 'resume'} resource: ${data.error || 'Unknown error'}`);
             }
@@ -403,8 +519,103 @@ document.getElementById('confirm-changes').addEventListener('click', async funct
 // Load resources when page loads
 document.addEventListener('DOMContentLoaded', () => {
     loadResourcesIntoSelector();
+    updateSuspendAllButton();
 });
 
 document.getElementById('analyticsCard').addEventListener('click', function () {
     window.open('analytics.html', '_blank', 'width=900,height=600');
+});
+
+// making announcements
+document.getElementById('announcementLink').addEventListener('click', function (event) {
+    event.preventDefault();
+    const modal = document.getElementById('announcement-modal');
+    const textarea = document.getElementById('announcement-text');
+    const charCount = document.getElementById('char-count');
+    
+    modal.style.display = 'flex';
+    textarea.value = '';
+    charCount.textContent = '0';
+    textarea.focus();
+});
+
+// close the thing when i click outside
+document.getElementById('announcement-modal').addEventListener('click', function (event) {
+    if (event.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+document.getElementById('cancel-announcement-btn').addEventListener('click', function () {
+    const modal = document.getElementById('announcement-modal');
+    modal.style.display = 'none';
+});
+
+// max characters just double the tweet lol
+document.getElementById('announcement-text').addEventListener('input', function () {
+    const charCount = document.getElementById('char-count');
+    charCount.textContent = this.value.length;
+    
+    // approaching limit and change color
+    if (this.value.length > 270) {
+        charCount.style.color = '#c1121f';
+    } else {
+        charCount.style.color = '#132a13';
+    }
+});
+
+// send announcement
+document.getElementById('send-announcement-btn').addEventListener('click', async function () {
+    const textarea = document.getElementById('announcement-text');
+    const message = textarea.value.trim();
+    
+    if (!message) {
+        alert("Please enter an announcement message.");
+        return;
+    }
+    
+    if (message.length > 300) {
+        alert("Message exceeds 300 characters.");
+        return;
+    }
+    
+    // Disable button during submission
+    this.disabled = true;
+    this.textContent = "Sending...";
+    
+    try {
+        const response = await fetch('/api/announcements', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                message: message
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.ok) {
+            alert(`Announcement sent successfully to all students and faculty members!`);
+        } else {
+            alert(`Failed to send announcement: ${data.error || 'Unknown error'}`);
+            this.disabled = false;
+            this.textContent = "Send";
+            return;
+        }
+        
+        // close and reset
+        document.getElementById('announcement-modal').style.display = 'none';
+        textarea.value = '';
+        document.getElementById('char-count').textContent = '0';
+        
+    } catch (err) {
+        console.error("Error sending announcement:", err);
+        alert("Error sending announcement. Please try again.");
+    } finally {
+        this.disabled = false;
+        this.textContent = "Send";
+    }
 });

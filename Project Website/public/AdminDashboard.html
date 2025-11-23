@@ -24,6 +24,29 @@
   </nav>
   <div class="main">
     <h1>Welcome, Administrator</h1>
+    
+    <!-- admin announcement modal -->
+    <div id="announcement-modal" style="display: none;">
+      <div class="announcement-bubble">
+        <div class="bubble-content">
+          <h3>Send Announcement</h3>
+          <textarea 
+            id="announcement-text" 
+            placeholder="Type your announcement here (max 300 characters)..."
+            maxlength="300"
+            rows="6"
+          ></textarea>
+          <div class="char-counter">
+            <span id="char-count">0</span>/300 characters
+          </div>
+          <div class="announcement-buttons">
+            <button class="button" id="send-announcement-btn">Send</button>
+            <button class="button cancel-btn" id="cancel-announcement-btn">Cancel</button>
+          </div>
+        </div>
+        <div class="bubble-tail"></div>
+      </div>
+    </div>
     <div class="card-grid">
       <a href="ResourceSpotlightAdmin.html" class="card-link">
         <div class="card">
@@ -49,6 +72,9 @@
       <div id="edit-tools" style="display: none">
         <button id="back-button" class="back-button">&larr; Back</button>
         <h3>Manage Resource</h3>
+        <button class="button" id="suspend-all-button" style="background-color: #c1121f;">
+          Suspend All Resources
+        </button>
         <button class="button" id="add-resource-button">
           Add a New Resource
         </button>

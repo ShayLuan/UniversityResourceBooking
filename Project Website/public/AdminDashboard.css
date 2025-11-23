@@ -36,6 +36,21 @@ body {
   cursor: pointer;
 }
 
+#suspend-all-button:hover,
+#suspend-all-button:focus {
+  cursor: pointer;
+}
+
+#suspend-all-button[style*="background-color: #c1121f"]:hover,
+#suspend-all-button[style*="background-color: #c1121f"]:focus {
+  background-color: #a0101a;
+}
+
+#suspend-all-button[style*="background-color: #386641"]:hover,
+#suspend-all-button[style*="background-color: #386641"]:focus {
+  background-color: #2d4f33;
+}
+
 #back-button {
   padding: 0px;
   color: #4f772d;
@@ -217,4 +232,108 @@ Reduce main content padding for a better fit
 
 #add-resource-confirm-button {
   margin-top: 12px;
+}
+
+/* announcement */
+#announcement-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.announcement-bubble {
+  position: relative;
+  background: #ecf39e;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 2px solid #90a955;
+}
+
+.bubble-tail {
+  position: absolute;
+  bottom: -20px;
+  left: 50px;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #ecf39e;
+}
+
+.bubble-tail::before {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: -22px;
+  width: 0;
+  height: 0;
+  border-left: 22px solid transparent;
+  border-right: 22px solid transparent;
+  border-top: 22px solid #90a955;
+  z-index: -1;
+}
+
+.bubble-content h3 {
+  margin: 0 0 20px 0;
+  color: #132a13;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.bubble-content textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #a7c957;
+  border-radius: 8px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1em;
+  color: #132a13;
+  background-color: #f8fbe6;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.bubble-content textarea:focus {
+  outline: none;
+  border-color: #90a955;
+  box-shadow: 0 0 8px rgba(144, 169, 85, 0.3);
+}
+
+.char-counter {
+  text-align: right;
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #132a13;
+  font-family: 'Exo 2', sans-serif;
+}
+
+#char-count {
+  font-weight: 600;
+  color: #132a13;
+}
+
+.announcement-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+}
+
+.cancel-btn:hover,
+.cancel-btn:focus {
+  background-color: #5a6268;
 }

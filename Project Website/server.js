@@ -26,7 +26,9 @@ const {
     getBookingsPerDay,
     getTopResources,
     getAverageDuration,
-    getActiveUsers
+    getActiveUsers,
+    createAnnouncement,
+    getAnnouncements
 } = require('./db.js');
 
 const app = express();
@@ -532,6 +534,50 @@ app.get('/api/analytics/summary', async (req, res) => {
 });
 
 
+
+// POST ANNOUNCEMENT (Admin only)
+app.post('/api/announcements', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        
+        if (req.session.userRole !== 'admin') {
+            return res.status(403).json({ error: 'Only administrators can send announcements' });
+        }
+        
+        const { message } = req.body;
+        
+        if (!message || !message.trim()) {
+            return res.status(400).json({ error: 'Message is required' });
+        }
+        
+        if (message.length > 300) {
+            return res.status(400).json({ error: 'Message exceeds 300 characters' });
+        }
+        
+        const announcementId = await createAnnouncement(message.trim(), req.session.userId);
+        res.json({ ok: true, id: announcementId, message: "Announcement sent successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to send announcement" });
+    }
+});
+
+// GET ANNOUNCEMENTS (Students and Faculty)
+app.get('/api/announcements', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        
+        const announcements = await getAnnouncements();
+        res.json(announcements);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load announcements" });
+    }
+});
 
 // START SERVER
 app.listen(port, () => {
