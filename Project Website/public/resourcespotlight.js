@@ -75,12 +75,23 @@ async function loadBookingsForResource(resourceName) {
       console.error("Error fetching bookings for resource:", resourceName);
       bookings = [];
       renderCalendar();
+
+      if (currentSelectedDate) {
+        showDayDetails(currentSelectedDate, []);
+      }
       return;
     }
 
     bookings = await res.json();
     console.log("Bookings for", resourceName, bookings);
     renderCalendar();
+
+    if (currentSelectedDate) {
+      const dayBookings = bookings.filter(
+        (b) => normalizedDate(b.date) === currentSelectedDate
+      );
+      showDayDetails(currentSelectedDate, dayBookings);
+    }
   } catch (err) {
     console.error("Failed to load bookings:", err);
   }
@@ -91,6 +102,49 @@ function normalizedDate(raw) {
   const d = new Date(raw);
   if (isNaN(d)) return raw; // if it's already a "YYYY-MM-DD" string it might just pass through
   return d.toISOString().split("T")[0];
+}
+
+function pad2(n) {
+  return n.toString().padStart(2, "0");
+}
+
+function showDayDetails(dateStr, dayBookings) {
+  const scheduleTitle = document.getElementById("scheduleTitle");
+  const scheduleList = document.getElementById("scheduleList");
+  const resourceName = document.getElementById("resourceSelect").value;
+
+  currentSelectedDate = dateStr;
+
+  scheduleList.innerHTML = "";
+
+  if (!dayBookings || dayBookings.length === 0) {
+    scheduleTitle.textContent = `${formatResourceName(resourceName)} currently has 0 bookings on ${dateStr}`;
+    return;
+  }
+
+  scheduleTitle.textContent = `${formatResourceName(resourceName)} currently has ${dayBookings.length} booking(s) on ${dateStr}`;
+
+  dayBookings.forEach(b => {
+    const parts = b.time.split(":");
+    const startH = parseInt(parts[0], 10);
+    const startM = parseInt(parts[1], 10) || 0;
+
+    const duration = Number(b.duration) || 0; // minutes
+    const startTotal = startH * 60 + startM;
+    const endTotal = startTotal + duration;
+
+    const endH = Math.floor(endTotal / 60);
+    const endM = endTotal % 60;
+
+    const startLabel = `${pad2(startH)}:${pad2(startM)}`;
+    const endLabel = `${pad2(endH)}:${pad2(endM)}`;
+
+    const div = document.createElement("div");
+    div.classList.add("booked-slot");
+    div.textContent = `${startLabel} until ${endLabel} (${duration} minutes)`;
+    scheduleList.appendChild(div);
+
+  });
 }
 
 // --------------------------------------------------------
@@ -166,6 +220,14 @@ function renderCalendar() {
       div.appendChild(tooltip);
       div.classList.add("has-tooltip");
     }
+
+    // corresponds with details of selected day
+    div.addEventListener("click", () => {
+      grid.querySelectorAll(".day").forEach(d => d.classList.remove("selected-day"));
+      div.classList.add("selected-day");
+
+      showDayDetails(dateStr, dayBookings);
+    });
 
     // Highlight today (optional: only if month/year match current real date)
     const today = new Date();
