@@ -41,12 +41,26 @@ async function findUser(email, password) {
 // ADD USER (REGISTER)
 // ------------------------------------------------------
 async function addUser(name, email, hashedPassword, role = "student") {
-    const [result] = await pool.query(
-        "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-        [name, email, hashedPassword, role]
-    );
-
-    return result.insertId;
+    // ensure created_at column exists before inserting
+    await ensureUsersCreatedAtColumn();
+    
+    try {
+        const [result] = await pool.query(
+            "INSERT INTO users (name, email, password, role, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)",
+            [name, email, hashedPassword, role]
+        );
+        return result.insertId;
+    } catch (err) {
+        // if still fails (shouldn't happen after ensureUsersCreatedAtColumn), try without it
+        if (err.code === 'ER_BAD_FIELD_ERROR' || err.message.includes('created_at')) {
+            const [result] = await pool.query(
+                "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+                [name, email, hashedPassword, role]
+            );
+            return result.insertId;
+        }
+        throw err;
+    }
 }
 // ------------------------------------------------------
 // FIND USER BY EMAIL (FOR FORGOT PASSWORD FLOW)
@@ -509,21 +523,98 @@ async function createAnnouncement(message, adminId) {
     return result.insertId;
 }
 
-async function getAnnouncements() {
+// ------------------------------------------------------
+// ENSURE CREATED_AT COLUMN EXISTS IN USERS TABLE
+// ------------------------------------------------------
+// cuz otherwise they always get all the notifications
+async function ensureUsersCreatedAtColumn() {
+    try {
+        // okok check the column exiists
+        await pool.query("SELECT created_at FROM users LIMIT 1");
+    } catch (err) {
+        // if column doesn't exist, add it
+        if (err.code === 'ER_BAD_FIELD_ERROR' || err.message.includes('created_at')) {
+            try {
+                await pool.query(`
+                    ALTER TABLE users 
+                    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                `);
+                console.log("Added created_at column to users table");
+            } catch (alterErr) {
+                // column might already exist or there's another issue
+                if (alterErr.code !== 'ER_DUP_FIELDNAME') {
+                    console.error("Error adding created_at column:", alterErr);
+                }
+            }
+        }
+    }
+}
+
+async function getAnnouncements(userId = null) {
     try {
         await pool.query("SELECT id FROM announcements LIMIT 1");
     } catch (err) {
         return [];
     }
     
-    const [rows] = await pool.query(`
+    // wait for the column to exist
+    await ensureUsersCreatedAtColumn();
+    
+    let query = `
         SELECT a.id, a.message, a.created_at, u.name as admin_name
         FROM announcements a
         JOIN users u ON a.admin_id = u.id
-        ORDER BY a.created_at DESC
-        LIMIT 50
-    `);
+    `;
+    
+    // only show announcements created after user registration
+    if (userId) {
+        try {
+            // get user's registration date
+            const [userRows] = await pool.query(
+                "SELECT created_at FROM users WHERE id = ?",
+                [userId]
+            );
+            
+            if (userRows.length > 0 && userRows[0].created_at) {
+                const userRegistrationDate = userRows[0].created_at;
+                // filter out all announcements created before user registration
+                query += ` WHERE a.created_at >= ?`;
+                const [rows] = await pool.query(
+                    query + ` ORDER BY a.created_at DESC LIMIT 50`,
+                    [userRegistrationDate]
+                );
+                return rows;
+            } else {
+                // user has no created_at timestamp - return no announcements
+                // is this bugging for old users ????
+                console.log("User", userId, "has no created_at timestamp - returning no announcements");
+                return [];
+            }
+        } catch (err) {
+            console.error("Error filtering announcements by user registration:", err);
+            // On error, return empty array to be safe (don't show old announcements)
+            return [];
+        }
+    }
+    
+    // return all announcements if no userId
+    const [rows] = await pool.query(query + ` ORDER BY a.created_at DESC LIMIT 50`);
     return rows;
+}
+
+// ------------------------------------------------------
+// GET ADMIN USER ID (for creating system announcements)
+// ------------------------------------------------------
+async function getAdminUserId() {
+    try {
+        const [rows] = await pool.query(
+            "SELECT id FROM users WHERE role = 'admin' LIMIT 1"
+        );
+        return rows.length > 0 ? rows[0].id : 1; // Default to ID 1 if no admin found
+    } catch (err) {
+        console.error("Error getting admin user ID:", err);
+        return 1; // Default fallback
+    }
 }
 
 // ------------------------------------------------------
@@ -557,6 +648,7 @@ module.exports = {
     getAverageDuration,
     getActiveUsers,
     createAnnouncement,
-    getAnnouncements
+    getAnnouncements,
+    getAdminUserId
 };
 

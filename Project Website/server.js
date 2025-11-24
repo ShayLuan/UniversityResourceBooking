@@ -28,7 +28,8 @@ const {
     getAverageDuration,
     getActiveUsers,
     createAnnouncement,
-    getAnnouncements
+    getAnnouncements,
+    getAdminUserId
 } = require('./db.js');
 
 const app = express();
@@ -155,7 +156,17 @@ app.post('/Register', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        await addUser(name, email, hashedPassword, 'student');
+        const userId = await addUser(name, email, hashedPassword, 'student');
+
+        // welcome message
+        try {
+            const adminId = await getAdminUserId();
+            const welcomeMessage = `Welcome to Campus Resource Booking, ${name}! We're excited to have you here. Start by exploring resources, making bookings, and managing your account. If you have any questions, feel free to contact our support team.`;
+            await createAnnouncement(welcomeMessage, adminId);
+        } catch (welcomeErr) {
+            // uhhhhh fail registration if welcome message creation fails???? how does this work????
+            console.error("Error creating welcome message:", welcomeErr);
+        }
 
         res.json({ ok: true });
 
@@ -594,7 +605,7 @@ app.get('/api/announcements', async (req, res) => {
             return res.status(401).json({ error: 'Not authenticated' });
         }
         
-        const announcements = await getAnnouncements();
+        const announcements = await getAnnouncements(req.session.userId);
         res.json(announcements);
     } catch (err) {
         console.error(err);

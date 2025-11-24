@@ -18,7 +18,7 @@
 
 <body class="student">
   <nav class="sidebar">
-    <a href="" class="sidebar-link" id="messagesLink"><span>💬</span> Messages</a>
+    <a href="" class="sidebar-link" id="messagesLink"><span>💬</span> Messages<span id="notification-badge" class="notification-badge" style="display: none;"><img src="sourcePics/transparent_speech_bubble.png" alt="New" /></span></a>
     <a href="ResourcesLogin.html" class="sidebar-link"><span>📖</span> Browse Resources</a>
     <a href="MyBookings.html" class="sidebar-link"><span>📅</span>My Bookings</a>
     <a href="Login.html" class="sidebar-link"><span>🚪</span> Log out</a>
@@ -153,10 +153,53 @@
           
           container.appendChild(messageDiv);
         });
+        
+        // hide notification badge when messages are loaded
+        const badge = document.getElementById('notification-badge');
+        if (badge) {
+          badge.style.display = 'none';
+        }
+        // Store last viewed time
+        if (announcements.length > 0) {
+          const latestAnnouncement = announcements[0];
+          localStorage.setItem('lastViewedAnnouncement', latestAnnouncement.created_at);
+        }
       } catch (err) {
         console.error('Error loading messages:', err);
         document.getElementById('messages-container').innerHTML = 
           '<p style="text-align: center; color: #c1121f; padding: 20px;">Error loading messages. Please try again.</p>';
+      }
+    }
+    
+    // check for new notifications
+    async function checkForNewNotifications() {
+      try {
+        const response = await fetch('/api/announcements', { credentials: 'include' });
+        if (!response.ok) {
+          return;
+        }
+        
+        const announcements = await response.json();
+        if (announcements.length === 0) {
+          return;
+        }
+        
+        const latestAnnouncement = announcements[0];
+        const lastViewed = localStorage.getItem('lastViewedAnnouncement');
+        const badge = document.getElementById('notification-badge');
+        
+        // Show badge if there's no last viewed time, or if there's a newer announcement
+        if (!lastViewed || new Date(latestAnnouncement.created_at) > new Date(lastViewed)) {
+          if (badge) {
+            badge.style.display = 'inline-block';
+          }
+        } else {
+          if (badge) {
+            badge.style.display = 'none';
+          }
+        }
+      } catch (err) {
+        console.error('Error checking for notifications:', err);
       }
     }
     
@@ -183,6 +226,7 @@
     // Load user name when page loads
     document.addEventListener("DOMContentLoaded", () => {
       loadUserName();
+      checkForNewNotifications();
       
     //   // Booking history click handler
     //   document.getElementById('booking-history').addEventListener('click', function () {
