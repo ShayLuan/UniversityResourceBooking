@@ -24,7 +24,7 @@
     <a href="Login.html" class="sidebar-link"><span>🚪</span> Log out</a>
   </nav>
   <div class="main">
-    <h1 id="welcome-message">Welcome, Dear Student!</h1>
+    <h1 id="welcome-message"><!--- Dynamic message --></h1>
     
     <!-- messages modal -->
     <div id="messages-modal" style="display: none;">
@@ -94,19 +94,20 @@
     async function loadUserName() {
       try {
         const res = await fetch("/api/user", { credentials: "include" });
+
         if (!res.ok) {
           console.error("Failed to load user data");
           return;
         }
         
-        const user = await res.json();
-        if (user.name) {
+          const user = await res.json();
+
           // just keep the first word for the msg
           const firstName = user.name.split(' ')[0];
           const welcomeElement = document.getElementById("welcome-message");
-          if (welcomeElement) {
-            welcomeElement.textContent = `Welcome, ${firstName}!`;
-          }
+
+          if (user.role === 'faculty') {
+            welcomeElement.textContent = `Welcome, Professor ${firstName}!`;
         }
       } catch (err) {
         console.error("Error loading user data:", err);
@@ -223,8 +224,37 @@
       }
     });
 
+        // Verify if user is a student/faculty user
+  async function checkRoles(role) {
+      try {
+          const response = await fetch('/api/user', { credentials: 'include'});
+
+        if (!response.ok) {
+            window.location.href = '/Login.html?error=unauthorized';
+            return null;
+        }
+
+        const user = await response.json();
+
+        if (user.role !== role) {
+            window.location.href = '/Login.html?error=unauthorized';
+            return null;
+        }
+
+        return user;
+
+    } catch (err) {
+        console.error('Error checking session: ', err);
+        window.location.href = '/Login.html?error=unauthorized';
+        return null;
+    }
+}
+
     // Load user name when page loads
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
+       const user = await checkRoles('faculty');
+       if (!user) return;
+
       loadUserName();
       checkForNewNotifications();
       

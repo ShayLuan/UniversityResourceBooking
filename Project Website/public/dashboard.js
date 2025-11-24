@@ -517,32 +517,35 @@ document.getElementById('confirm-changes').addEventListener('click', async funct
 });
 
 // Verify if user is an admin
-// async function checkRoles(role) {
-//     try {
-//         const response = await fetch('/api/user', { credentials: 'include'});
+async function checkRoles(role) {
+    try {
+        const response = await fetch('/api/user', { credentials: 'include'});
 
-//         if (!response.ok) {
-//             window.location.href = '/Login.html?error=unauthorized';
-//             return null;
-//         }
+        if (!response.ok) {
+            window.location.href = '/Login.html?error=unauthorized';
+            return null;
+        }
 
-//         const user = await res.json();
+        const user = await response.json();
 
-//         if (user.role !== role) {
-//             window.location.href = '/Login.html?error=unauthorized';
-//             return null;
-//         }
-//     } catch (err) {
-//         console.error('Error checking session: ', err);
-//         window.location.href = '/Login.html?error=unauthorized';
-//         return null;
-//     }
-// }
+        if (user.role !== role) {
+            window.location.href = '/Login.html?error=unauthorized';
+            return null;
+        }
+
+        return user;
+
+    } catch (err) {
+        console.error('Error checking session: ', err);
+        window.location.href = '/Login.html?error=unauthorized';
+        return null;
+    }
+}
 
 // Load resources when page loads
 document.addEventListener('DOMContentLoaded', async () => {
-    // const user = await checkRoles("admin");
-    // if (!user) return;
+    const user = await checkRoles('admin');
+    if (!user) return;
 
     loadResourcesIntoSelector();
     updateSuspendAllButton();
