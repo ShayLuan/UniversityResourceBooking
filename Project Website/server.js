@@ -43,7 +43,6 @@ app.use(session({
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
-
 // Middleware
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));

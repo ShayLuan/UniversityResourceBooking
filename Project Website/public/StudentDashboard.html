@@ -100,13 +100,17 @@
         }
         
         const user = await res.json();
+
         if (user.name) {
           // just keep the first word for the msg
           const firstName = user.name.split(' ')[0];
           const welcomeElement = document.getElementById("welcome-message");
-          if (welcomeElement) {
+
+          if (user.role === 'faculty') {
+            welcomeElement.textContent = `Welcome, Professor ${firstName}`;
+          } else {
             welcomeElement.textContent = `Welcome, ${firstName}!`;
-          }
+        }
         }
       } catch (err) {
         console.error("Error loading user data:", err);
@@ -223,8 +227,34 @@
       }
     });
 
+    // Verify if user is a student/faculty user
+async function checkRoles(role) {
+    try {
+        const response = await fetch('/api/user', { credentials: 'include'});
+
+        if (!response.ok) {
+            window.location.href = '/Login.html?error=unauthorized';
+            return null;
+        }
+
+        const user = await res.json();
+
+        if (user.role !== role) {
+            window.location.href = '/Login.html?error=unauthorized';
+            return null;
+        }
+    } catch (err) {
+        console.error('Error checking session: ', err);
+        window.location.href = '/Login.html?error=unauthorized';
+        return null;
+    }
+}
+
     // Load user name when page loads
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
+      // const user = await checkRoles('student' || 'faculty');
+      // if (!user) return;
+
       loadUserName();
       checkForNewNotifications();
       
