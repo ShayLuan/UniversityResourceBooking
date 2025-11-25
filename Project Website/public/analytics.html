@@ -1,85 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- Font Imports -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet" />
+    <title>Campus Booking Analytics</title>
 
-    <link type="text/css" rel="stylesheet" href="Home.css" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body.analytics {
+            font-family: 'Inter', sans-serif;
+            background: #eef2f7; /* soft bluish-grey */
+            padding: 40px;
+            margin: 0;
+
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        h1 {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 32px;
+            color: #1d4ed8; /* deep blue */
+        }
+
+        /* Base card styling */
+        .card {
+            background: #ffffff;
+            padding: 20px 25px;
+            border-radius: 12px;
+            border: 2px solid transparent; /* will be overridden by category */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+
+        /* Category colors */
+        .overview {
+            border-color: #3b82f6; /* blue */
+        }
+
+        .daily {
+            border-color: #8b5cf6; /* purple */
+        }
+
+        .resources {
+            border-color: #14b8a6; /* teal */
+        }
+
+        /* Slight title coloring inside cards */
+        .overview h2 {
+            color: #1e40af;
+        }
+
+        .daily h2 {
+            color: #6d28d9;
+        }
+
+        .resources h2 {
+            color: #0f766e;
+        }
+
+        /* Lists */
+        .card ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .card li {
+            margin-bottom: 6px;
+        }
+    </style>
 </head>
+
 <body class="analytics">
+
     <h1>Campus Booking Analytics</h1>
 
-    <section id="summary">
+    <!-- OVERVIEW -->
+    <section class="card overview">
         <h2>Overview</h2>
         <p><strong>Total Bookings:</strong> <span id="totalBookings"></span></p>
-        <p><strong>Average Duration:</strong> <span id="avgDuration"></span> min</p>
+        <p><strong>Average Duration:</strong> <span id="avgDuration"></span></p>
     </section>
 
-    <section>
+    <!-- BOOKINGS PER DAY -->
+    <section class="card daily">
         <h2>Bookings Per Day (Last 7 Days)</h2>
         <ul id="bookingsPerDay"></ul>
     </section>
 
-    <section>
+    <!-- TOP RESOURCES -->
+    <section class="card resources">
         <h2>Top Resources</h2>
         <ul id="topResources"></ul>
     </section>
 
     <script>
-async function loadAnalytics() {
-    const res = await fetch('/api/analytics/summary');
-    const data = await res.json();
+        async function loadAnalytics() {
+            const res = await fetch('/api/analytics/summary');
+            const data = await res.json();
 
-    // SAFELY HANDLE TOTAL BOOKINGS
-    document.getElementById("totalBookings").textContent =
-        data.totalBookings === 0 ? "No bookings yet" : data.totalBookings;
+            document.getElementById("totalBookings").textContent =
+                data.totalBookings === 0 ? "No bookings yet" : data.totalBookings;
 
-    // SAFELY HANDLE AVG DURATION
-    document.getElementById("avgDuration").textContent =
-        data.avgDuration === 0
-            ? "No data"
-            : Math.round(data.avgDuration) + " min";
+            document.getElementById("avgDuration").textContent =
+                data.avgDuration === 0 ? "No data" : Math.round(data.avgDuration) + " min";
 
-    // BOOKINGS PER DAY
-    const days = document.getElementById("bookingsPerDay");
-    days.innerHTML = ""; // Clear old data
+            const days = document.getElementById("bookingsPerDay");
+            days.innerHTML = "";
 
-    if (data.bookingsPerDay.length === 0) {
-        days.innerHTML = "<li>No booking activity yet</li>";
-    } else {
-        data.bookingsPerDay.forEach(row => {
-            days.innerHTML += `<li>${row.date}: ${row.count} bookings</li>`;
-        });
-    }
+            if (!data.bookingsPerDay.length) {
+                days.innerHTML = "<li>No booking activity yet</li>";
+            } else {
+                data.bookingsPerDay.forEach(row => {
+                    days.innerHTML += `<li>${row.date}: ${row.count} bookings</li>`;
+                });
+            }
 
-    // TOP RESOURCES
-    const top = document.getElementById("topResources");
-    top.innerHTML = "";
+            const top = document.getElementById("topResources");
+            top.innerHTML = "";
 
-    if (data.topResources.length === 0) {
-        top.innerHTML = "<li>No resources booked yet</li>";
-    } else {
-        data.topResources.forEach(row => {
-            top.innerHTML += `<li>${row.resource}: ${row.count}</li>`;
-        });
-    }
-}
+            if (!data.topResources.length) {
+                top.innerHTML = "<li>No resources booked yet</li>";
+            } else {
+                data.topResources.forEach(row => {
+                    top.innerHTML += `<li>${row.resource}: ${row.count}</li>`;
+                });
+            }
+        }
 
-loadAnalytics();
-</script>
+        loadAnalytics();
+    </script>
 
 </body>
-
-
 </html>
