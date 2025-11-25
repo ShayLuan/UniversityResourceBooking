@@ -26,8 +26,10 @@ const {
     getBookingsPerDay,
     getTopResources,
     getAverageDuration,
-    getActiveUsers
-} = require('./db.js');
+    getActiveUsers,
+    createAnnouncement,
+    getAnnouncements,
+    getAdminUserId} = require('./db.js');
 
 const app = express();
 const port = 3000;
@@ -70,7 +72,7 @@ app.post('/Login', async (req, res) => {
 
 
         if (user.role === 'admin') {
-            return res.redirect('/AdminDashboard.html');
+            return res.redirect('/LoginAdmin.html');
         } else if (user.role === 'faculty') {
             return res.redirect('/FacultyDashboard.html');
         } else {
@@ -83,6 +85,32 @@ app.post('/Login', async (req, res) => {
     }
 });
 
+// LOGIN for admin
+app.post('/LoginAdmin', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await findUser(email, password);
+
+        if (!user) {
+            return res.redirect('/Login.html?error=1');
+        }
+
+        if (user.role !== 'admin') {
+            return res.redirect('/Login.html?error=notAdmin');
+        }
+
+        req.session.userId = user.id;
+        req.session.userEmail = user.email;
+        req.session.userRole = user.role;
+
+        return res.redirect('/AdminDashboard.html');
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
+    }
+});
 
 // GET BOOKINGS BY RESOURCE (for Spotlight Calendar)
 app.get('/api/bookings/resource/:resourceName', async (req, res) => {
@@ -128,8 +156,17 @@ app.post('/Register', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        await addUser(name, email, hashedPassword, 'student');
+        const userId = await addUser(name, email, hashedPassword, 'student');
 
+        // welcome message
+        try {
+            const adminId = await getAdminUserId();
+            const welcomeMessage = `Welcome to Campus Resource Booking, ${name}! We're excited to have you here. Start by exploring resources, making bookings, and managing your account. If you have any questions, feel free to contact our support team.`;
+            await createAnnouncement(welcomeMessage, adminId);
+        } catch (welcomeErr) {
+            // uhhhhh fail registration if welcome message creation fails???? how does this work????
+            console.error("Error creating welcome message:", welcomeErr);
+        }
         res.json({ ok: true });
 
     } catch (err) {
@@ -160,7 +197,7 @@ app.post('/api/bookings', async (req, res) => {
         if (!resource || !date || !time || !duration)
             return res.status(400).json({ error: 'Missing fields' });
 
-        const id = await createBooking(
+        const result = await createBooking(
             req.session.userId,
             resource,
             date,
@@ -168,11 +205,16 @@ app.post('/api/bookings', async (req, res) => {
             duration
         );
 
-        res.json({ ok: true, bookingId: id });
+        if (!result.ok) {
+            // conflict or validation error
+            return res.status(400).json(result);
+        }
+
+        res.json({ ok: true, bookingId: result.bookingId });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to create booking' });
+        console.error("Create booking error:", err);
+        res.status(500).json({ ok: false, error: err.message || 'Failed to create booking' });
     }
 });
 
@@ -207,7 +249,7 @@ app.put('/api/bookings/:id', async (req, res) => {
         const bookingId = Number(req.params.id);
         const { resource, date, time, duration } = req.body;
 
-        const ok = await updateBooking(
+        const result = await updateBooking(
             bookingId,
             req.session.userId,
             resource,
@@ -216,8 +258,10 @@ app.put('/api/bookings/:id', async (req, res) => {
             duration
         );
 
-        if (!ok) return res.status(404).json({ error: 'Booking not found' });
-
+        if (!result.ok) {
+            const status = result.error === 'Booking not found' ? 404 : 400;
+            return res.status(status).json(result);
+        }
         res.json({ ok: true });
 
     } catch (err) {
@@ -524,7 +568,49 @@ app.get('/api/analytics/summary', async (req, res) => {
     }
 });
 
+// POST ANNOUNCEMENT (Admin only)
+app.post('/api/announcements', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        
+        if (req.session.userRole !== 'admin') {
+            return res.status(403).json({ error: 'Only administrators can send announcements' });
+        }
+        
+        const { message } = req.body;
+        
+        if (!message || !message.trim()) {
+            return res.status(400).json({ error: 'Message is required' });
+        }
+        
+        if (message.length > 300) {
+            return res.status(400).json({ error: 'Message exceeds 300 characters' });
+        }
+        
+        const announcementId = await createAnnouncement(message.trim(), req.session.userId);
+        res.json({ ok: true, id: announcementId, message: "Announcement sent successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to send announcement" });
+    }
+});
 
+// GET ANNOUNCEMENTS (Students and Faculty)
+app.get('/api/announcements', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        
+        const announcements = await getAnnouncements(req.session.userId);
+        res.json(announcements);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load announcements" });
+    }
+});
 
 // START SERVER
 app.listen(port, () => {
