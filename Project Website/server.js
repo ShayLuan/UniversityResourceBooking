@@ -26,14 +26,11 @@ const {
     getBookingsPerDay,
     getTopResources,
     getAverageDuration,
-    getActiveUsers,
-    createAnnouncement,
-    getAnnouncements,
-    getAdminUserId
+    getActiveUsers
 } = require('./db.js');
 
 const app = express();
-const port = 5000;
+const port = 3000;
 
 // Session
 app.use(session({
@@ -42,6 +39,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
 }));
+
 
 // Middleware
 app.use(express.static('public'));
@@ -70,8 +68,9 @@ app.post('/Login', async (req, res) => {
         req.session.userEmail = user.email;
         req.session.userRole = user.role;
 
+
         if (user.role === 'admin') {
-            return res.redirect('/LoginAdmin.html');
+            return res.redirect('/AdminDashboard.html');
         } else if (user.role === 'faculty') {
             return res.redirect('/FacultyDashboard.html');
         } else {
@@ -84,32 +83,6 @@ app.post('/Login', async (req, res) => {
     }
 });
 
-// LOGIN for admin
-app.post('/LoginAdmin', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await findUser(email, password);
-
-        if (!user) {
-            return res.redirect('/Login.html?error=1');
-        }
-
-        if (user.role !== 'admin') {
-            return res.redirect('/Login.html?error=notAdmin');
-        }
-
-        req.session.userId = user.id;
-        req.session.userEmail = user.email;
-        req.session.userRole = user.role;
-
-        return res.redirect('/AdminDashboard.html');
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Server error");
-    }
-});
 
 // GET BOOKINGS BY RESOURCE (for Spotlight Calendar)
 app.get('/api/bookings/resource/:resourceName', async (req, res) => {
@@ -155,17 +128,7 @@ app.post('/Register', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userId = await addUser(name, email, hashedPassword, 'student');
-
-        // welcome message
-        try {
-            const adminId = await getAdminUserId();
-            const welcomeMessage = `Welcome to Campus Resource Booking, ${name}! We're excited to have you here. Start by exploring resources, making bookings, and managing your account. If you have any questions, feel free to contact our support team.`;
-            await createAnnouncement(welcomeMessage, adminId);
-        } catch (welcomeErr) {
-            // uhhhhh fail registration if welcome message creation fails???? how does this work????
-            console.error("Error creating welcome message:", welcomeErr);
-        }
+        await addUser(name, email, hashedPassword, 'student');
 
         res.json({ ok: true });
 
@@ -197,7 +160,7 @@ app.post('/api/bookings', async (req, res) => {
         if (!resource || !date || !time || !duration)
             return res.status(400).json({ error: 'Missing fields' });
 
-        const result = await createBooking(
+        const id = await createBooking(
             req.session.userId,
             resource,
             date,
@@ -205,16 +168,11 @@ app.post('/api/bookings', async (req, res) => {
             duration
         );
 
-        if (!result.ok) {
-            // conflict or validation error
-            return res.status(400).json(result);
-        }
-
-        res.json({ ok: true, bookingId: result.bookingId });
+        res.json({ ok: true, bookingId: id });
 
     } catch (err) {
-        console.error("Create booking error:", err);
-        res.status(500).json({ ok: false, error: err.message || 'Failed to create booking' });
+        console.error(err);
+        res.status(500).json({ error: 'Failed to create booking' });
     }
 });
 
@@ -249,7 +207,7 @@ app.put('/api/bookings/:id', async (req, res) => {
         const bookingId = Number(req.params.id);
         const { resource, date, time, duration } = req.body;
 
-        const result = await updateBooking(
+        const ok = await updateBooking(
             bookingId,
             req.session.userId,
             resource,
@@ -258,10 +216,8 @@ app.put('/api/bookings/:id', async (req, res) => {
             duration
         );
 
-        if (!result.ok) {
-            const status = result.error === 'Booking not found' ? 404 : 400;
-            return res.status(status).json(result);
-        }
+        if (!ok) return res.status(404).json({ error: 'Booking not found' });
+
         res.json({ ok: true });
 
     } catch (err) {
@@ -463,11 +419,11 @@ app.get('/api/resources', async (_req, res) => {
 app.post('/api/resources', async (req, res) => {
     try {
         const { name, category, description, location, capacity } = req.body;
-
+        
         if (!name || !category) {
             return res.status(400).json({ error: "Name and category are required" });
         }
-
+        
         const resourceId = await addResource(name, category, description, location, capacity, null);
         res.json({ ok: true, id: resourceId, message: "Resource added successfully" });
     } catch (err) {
@@ -480,11 +436,11 @@ app.post('/api/resources', async (req, res) => {
 app.delete('/api/resources/:name', async (req, res) => {
     try {
         const { name } = req.params;
-
+        
         if (!name) {
             return res.status(400).json({ error: "Resource name is required" });
         }
-
+        
         const deleted = await deleteResource(name);
         if (deleted) {
             res.json({ ok: true, message: "Resource deleted successfully" });
@@ -502,11 +458,11 @@ app.put('/api/resources/:name/suspend', async (req, res) => {
     try {
         const { name } = req.params;
         const { suspended } = req.body;
-
+        
         if (!name || typeof suspended !== 'boolean') {
             return res.status(400).json({ error: "Resource name and suspended status are required" });
         }
-
+        
         const updated = await updateResourceSuspended(name, suspended);
         if (updated) {
             res.json({ ok: true, message: `Resource ${suspended ? 'suspended' : 'resumed'} successfully` });
@@ -524,17 +480,17 @@ app.post('/api/resources/:name/duplicate', async (req, res) => {
     try {
         const { name } = req.params;
         const { newName } = req.body;
-
+        
         if (!name || !newName) {
             return res.status(400).json({ error: "Original resource name and new name are required" });
         }
-
+        
         // check if new name already exists
         const existing = await getResourceByName(newName);
         if (existing) {
             return res.status(400).json({ error: "A resource with this name already exists" });
         }
-
+        
         const resourceId = await duplicateResource(name, newName);
         res.json({ ok: true, id: resourceId, message: "Resource duplicated successfully" });
     } catch (err) {
@@ -568,49 +524,7 @@ app.get('/api/analytics/summary', async (req, res) => {
     }
 });
 
-// POST ANNOUNCEMENT (Admin only)
-app.post('/api/announcements', async (req, res) => {
-    try {
-        if (!req.session.userId) {
-            return res.status(401).json({ error: 'Not authenticated' });
-        }
-        
-        if (req.session.userRole !== 'admin') {
-            return res.status(403).json({ error: 'Only administrators can send announcements' });
-        }
-        
-        const { message } = req.body;
-        
-        if (!message || !message.trim()) {
-            return res.status(400).json({ error: 'Message is required' });
-        }
-        
-        if (message.length > 300) {
-            return res.status(400).json({ error: 'Message exceeds 300 characters' });
-        }
-        
-        const announcementId = await createAnnouncement(message.trim(), req.session.userId);
-        res.json({ ok: true, id: announcementId, message: "Announcement sent successfully" });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to send announcement" });
-    }
-});
 
-// GET ANNOUNCEMENTS (Students and Faculty)
-app.get('/api/announcements', async (req, res) => {
-    try {
-        if (!req.session.userId) {
-            return res.status(401).json({ error: 'Not authenticated' });
-        }
-        
-        const announcements = await getAnnouncements(req.session.userId);
-        res.json(announcements);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to load announcements" });
-    }
-});
 
 // START SERVER
 app.listen(port, () => {

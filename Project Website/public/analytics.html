@@ -14,75 +14,58 @@
 
     <style>
         body.analytics {
-            font-family: 'Inter', sans-serif;
-            background: #eef2f7; /* soft bluish-grey */
-            padding: 40px;
-            margin: 0;
+        font-family: 'Inter', sans-serif;
 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-        }
+        /* YOUR ORIGINAL BACKGROUND HERE */
+        background: url("SourcePics/campus_pic_dim.jpg") no-repeat center center fixed;
+        background-size: cover;
 
-        h1 {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-bottom: 10px;
-            font-weight: 700;
-            font-size: 32px;
-            color: #1d4ed8; /* deep blue */
-        }
+        margin: 0;
+        padding: 40px;
 
-        /* Base card styling */
-        .card {
-            background: #ffffff;
-            padding: 20px 25px;
-            border-radius: 12px;
-            border: 2px solid transparent; /* will be overridden by category */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
+        /* GRID DASHBOARD */
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 25px;
 
-        .card h2 {
-            margin-top: 0;
-            font-weight: 600;
-        }
+        /* Add a subtle overlay tint to improve readability */
+        backdrop-filter: blur(4px);
+    }
 
-        /* Category colors */
-        .overview {
-            border-color: #3b82f6; /* blue */
-        }
+    h1 {
+        grid-column: 1 / -1;
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: 700;
+        font-size: 32px;
+        color: white;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
 
-        .daily {
-            border-color: #8b5cf6; /* purple */
-        }
+    /* CARD BASE */
+    .card {
+        background: rgba(255, 255, 255, 0.85);  /* semi-transparent */
+        padding: 20px 25px;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        backdrop-filter: blur(6px);
+    }
 
-        .resources {
-            border-color: #14b8a6; /* teal */
-        }
+    /* CATEGORY COLORS */
+    .overview { border-color: #3b82f6; }
+    .daily { border-color: #8b5cf6; }
+    .resources { border-color: #14b8a6; }
 
-        /* Slight title coloring inside cards */
-        .overview h2 {
-            color: #1e40af;
-        }
+    .overview h2 { color: #1e40af; }
+    .daily h2 { color: #6d28d9; }
+    .resources h2 { color: #0f766e; }
 
-        .daily h2 {
-            color: #6d28d9;
-        }
+    .card h2 { margin-top: 0; font-weight: 600; }
+    .card ul { padding-left: 20px; margin-top: 10px; }
+    .card li { margin-bottom: 6px; }
+</style>
 
-        .resources h2 {
-            color: #0f766e;
-        }
-
-        /* Lists */
-        .card ul {
-            padding-left: 20px;
-            margin-top: 10px;
-        }
-
-        .card li {
-            margin-bottom: 6px;
-        }
-    </style>
 </head>
 
 <body class="analytics">
