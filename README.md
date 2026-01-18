@@ -1,10 +1,5 @@
-# SOEN287-webStuff
-SOEN287 - Web Programming deliverables
+Fully deployable University Resource Booking System.
 
-Team Members:
-BEAUCHER, Anthony - 40213341
-KHIRALLAH, Abdallah - 40285155
-LUAN, Yuqiao - 40028754
-TABARES-CLEOFAS, Jonathan - 40276359
+Frontend with HTML5, CSS and JavaScript
 
-First Deliverable Submission Date -> 26 October 2025 
+Backend powered by Node.js, MySQL
